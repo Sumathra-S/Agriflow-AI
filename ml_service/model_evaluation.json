@@ -1,0 +1,41 @@
+{
+  "model_type": "Gradient Boosting Regressor with Diurnal Flow Priors",
+  "baseline_type": "Historical Seasonal / Hourly Moving Average",
+  "sample_size": 1980,
+  "test_records": 436,
+  "metrics": {
+    "baseline_mae": 5.72,
+    "model_mae": 5.25,
+    "mae_improvement_pct": 8.1,
+    "baseline_peak_accuracy": 76.6,
+    "model_peak_accuracy": 83.3,
+    "avg_wait_reduction_minutes": 56
+  },
+  "feature_importances": [
+    {
+      "feature": "Scheduled Slot Bookings",
+      "importance": 0.42,
+      "direction": "positive",
+      "description": "Registered farmer appointments for the time window"
+    },
+    {
+      "feature": "Current Gate Queue",
+      "importance": 0.28,
+      "direction": "positive",
+      "description": "Tractors & trolleys physically waiting at weighbridge entry"
+    },
+    {
+      "feature": "Diurnal Harvest Peak (11 AM - 2 PM)",
+      "importance": 0.18,
+      "direction": "positive",
+      "description": "Historical clustering of farmer arrivals around mid-day"
+    },
+    {
+      "feature": "Effective Processing Capacity",
+      "importance": 0.12,
+      "direction": "negative",
+      "description": "Active weighbridges, moisture meters, and grading staff rate"
+    }
+  ],
+  "formula": "Demand_Pressure = (Predicted_Arrivals + Current_Queue) / Effective_Capacity"
+}
