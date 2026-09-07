@@ -14,18 +14,15 @@ import {
   Search,
   ExternalLink,
   ChevronRight,
-  BarChart3,
-  ShieldCheck,
-  Scale,
-  Sliders,
-  FileText,
-  CheckCircle2
+  Sliders
 } from 'lucide-react';
+import { DistrictCommandCentre } from '../operator/DistrictCommandCentre';
+import { TamperEvidentAuditTrail } from '../operator/TamperEvidentAuditTrail';
 
 export const DistrictOverview: React.FC = () => {
   const { currentQueue, expectedArrivals, congestionRisk } = useSimulation();
   const [selectedFilter, setSelectedFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LOW'>('ALL');
-  const [activeTab, setActiveTab] = useState<'centres' | 'policies' | 'audit_logs' | 'model_comparison'>('centres');
+  const [activeTab, setActiveTab] = useState<'centres' | 'cluster_rebalancing' | 'policies' | 'audit_logs' | 'model_comparison'>('cluster_rebalancing');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Map 12 centres with realistic dynamic metrics
@@ -115,6 +112,14 @@ export const DistrictOverview: React.FC = () => {
         {/* Tab switch between Centres, Policies, Audit Logs, and Model Comparison */}
         <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-md border border-slate-200 text-xs font-semibold">
           <button
+            onClick={() => setActiveTab('cluster_rebalancing')}
+            className={`px-3 py-1 rounded transition-colors ${
+              activeTab === 'cluster_rebalancing' ? 'bg-gov-800 text-white font-bold shadow-xs' : 'text-slate-700 hover:text-slate-950 font-bold'
+            }`}
+          >
+            🏛️ Cluster Load Balancing
+          </button>
+          <button
             onClick={() => setActiveTab('centres')}
             className={`px-3 py-1 rounded transition-colors ${
               activeTab === 'centres' ? 'bg-white text-gov-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
@@ -199,6 +204,11 @@ export const DistrictOverview: React.FC = () => {
         />
       )}
 
+      {/* CLUSTER LOAD BALANCING TAB */}
+      {activeTab === 'cluster_rebalancing' && (
+        <DistrictCommandCentre />
+      )}
+
       {/* POLICY MANAGEMENT TAB */}
       {activeTab === 'policies' && (
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-gov space-y-6">
@@ -259,53 +269,8 @@ export const DistrictOverview: React.FC = () => {
 
       {/* SYSTEM AUDIT LOG TAB */}
       {activeTab === 'audit_logs' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-gov space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-gov-800" />
-                <span>Central System Audit Trail</span>
-              </h3>
-              <p className="text-xs text-slate-500">
-                Immutable operational logs recorded across operators and administrators
-              </p>
-            </div>
-            <span className="text-xs font-mono font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded">
-              Role: Central Admin (DFSC)
-            </span>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
-                <tr>
-                  <th className="p-3">Time</th>
-                  <th className="p-3">Actor & Role</th>
-                  <th className="p-3">Action</th>
-                  <th className="p-3">Affected Resource</th>
-                  <th className="p-3">Details</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {authService.getAuditLogs().map(log => (
-                  <tr key={log.id} className="hover:bg-slate-50">
-                    <td className="p-3 font-mono text-slate-500">{log.timestamp}</td>
-                    <td className="p-3">
-                      <span className="font-bold text-slate-900">{log.actor}</span>
-                      <span className="block text-[10px] text-gov-700 font-semibold">{log.role}</span>
-                    </td>
-                    <td className="p-3">
-                      <span className="px-2 py-0.5 rounded font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        {log.action}
-                      </span>
-                    </td>
-                    <td className="p-3 text-slate-800 font-medium">{log.affectedResource}</td>
-                    <td className="p-3 text-slate-600 max-w-xs">{log.details}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="space-y-6">
+          <TamperEvidentAuditTrail />
         </div>
       )}
 

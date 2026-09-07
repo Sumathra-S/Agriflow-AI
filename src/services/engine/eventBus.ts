@@ -14,9 +14,12 @@ export type AgriFlowEventType =
   | 'RESCHEDULE_PROPOSED'
   | 'RESCHEDULE_ACCEPTED'
   | 'NOTIFICATION_DISPATCHED'
-  | 'AUDIT_LOGGED';
+  | 'AUDIT_LOGGED'
+  | 'REALLOCATION_OFFERED'
+  | 'ACTION_EXECUTED';
 
 export interface AgriFlowEvent<T = any> {
+  id?: string;
   type: AgriFlowEventType;
   payload: T;
   timestamp: string;
@@ -63,6 +66,10 @@ class AgriFlowEventBus {
         }
       });
     }
+  }
+
+  public emit<T = any>(eventObj: { type: AgriFlowEventType; payload: T; source?: string; id?: string; timestamp?: string }): void {
+    this.publish(eventObj.type, eventObj.payload, eventObj.source || 'AgriFlowSystem');
   }
 }
 

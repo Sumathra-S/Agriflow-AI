@@ -14,9 +14,12 @@ import { IvrPhoneModal } from '../ivr/IvrPhoneModal';
 import { UssdModal } from '../ivr/UssdModal';
 import { FarmerProfile } from '../../types/procurement';
 import { ReschedulingBanner } from './ReschedulingBanner';
-import { QueueTrackingCard } from './QueueTrackingCard';
 import { ProcurementLifecycleCard } from './ProcurementLifecycleCard';
-import { Home, Ticket, Bell, HelpCircle, WifiOff, Zap, ShieldCheck } from 'lucide-react';
+import { MyPreferencesModal } from './MyPreferencesModal';
+import { BetterOptionCard } from './BetterOptionCard';
+import { WhenShouldIArriveModal } from './WhenShouldIArriveModal';
+import { VirtualQueueCard } from './VirtualQueueCard';
+import { Home, Ticket, Bell, HelpCircle, WifiOff, Zap } from 'lucide-react';
 
 export const FarmerMobileView: React.FC = () => {
   const { t } = useLanguage();
@@ -29,6 +32,8 @@ export const FarmerMobileView: React.FC = () => {
   const [isIvrModalOpen, setIsIvrModalOpen] = useState<boolean>(false);
   const [isUssdModalOpen, setIsUssdModalOpen] = useState<boolean>(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState<boolean>(false);
+  const [isPreferencesOpen, setIsPreferencesOpen] = useState<boolean>(false);
+  const [isArrivalModalOpen, setIsArrivalModalOpen] = useState<boolean>(false);
 
   const [isLowConnectivity, setIsLowConnectivity] = useState<boolean>(false);
   const [isLowDataMode, setIsLowDataMode] = useState<boolean>(false);
@@ -86,6 +91,7 @@ export const FarmerMobileView: React.FC = () => {
         onOpenIvr={() => setIsIvrModalOpen(true)}
         onOpenUssd={() => setIsUssdModalOpen(true)}
         onOpenRegister={() => setIsRegisterModalOpen(true)}
+        onOpenPreferences={() => setIsPreferencesOpen(true)}
       />
 
       {/* 2. Assisted Access / Common Service Centre (CSC) Bar */}
@@ -130,11 +136,14 @@ export const FarmerMobileView: React.FC = () => {
       <main className="flex-1 p-4 pb-24 overflow-y-auto">
         {activeTab === 'home' && (
           <div className="space-y-4">
+            {/* Smart Centre Allocation Recommendation Banner (Better Option Found) */}
+            <BetterOptionCard />
+
+            {/* AI-Powered Virtual Queue & Dynamic Arrival Stage Card */}
+            <VirtualQueueCard onOpenArrivalModal={() => setIsArrivalModalOpen(true)} />
+
             {/* Operational Delay Advisory & Rescheduling Recommendation */}
             <ReschedulingBanner />
-
-            {/* Live Queue Position & Turn Approaching Alert */}
-            <QueueTrackingCard farmerToken={assistedToken ? `TK-${assistedToken}` : 'TK-1024'} />
 
             {/* Current Crowd Condition & Guidance Card */}
             <CongestionCard
@@ -225,6 +234,16 @@ export const FarmerMobileView: React.FC = () => {
       <UssdModal
         isOpen={isUssdModalOpen}
         onClose={() => setIsUssdModalOpen(false)}
+      />
+
+      <MyPreferencesModal
+        isOpen={isPreferencesOpen}
+        onClose={() => setIsPreferencesOpen(false)}
+      />
+
+      <WhenShouldIArriveModal
+        isOpen={isArrivalModalOpen}
+        onClose={() => setIsArrivalModalOpen(false)}
       />
 
       {/* 7. Strict 4-Tab Bottom Navigation Bar (Section 6 & 48) */}

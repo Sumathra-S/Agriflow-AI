@@ -3,7 +3,6 @@ import { useSimulation } from '../../context/SimulationContext';
 import { MetricCard } from '../common/MetricCard';
 import { StatusBadge } from '../common/StatusBadge';
 import { MainAlertBanner } from './MainAlertBanner';
-import { ExplainabilityCard } from './ExplainabilityCard';
 import { ForecastChart } from './ForecastChart';
 import { DemandCapacityCard } from './DemandCapacityCard';
 import { RecommendedActions } from './RecommendedActions';
@@ -20,11 +19,9 @@ import {
   BarChart3,
   Settings,
   Clock,
-  AlertTriangle,
   CheckCircle2,
   CalendarClock,
   ShieldAlert,
-  ArrowRight,
   Send,
   UserCheck,
   GraduationCap,
@@ -35,13 +32,25 @@ import {
   TrendingUp,
   Activity,
   PhoneForwarded,
-  Sliders
+  Sliders,
+  Building2,
+  Brain,
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
 import { CrowdShiftSimulator } from './CrowdShiftSimulator';
 import { OperationalControllerCard } from './OperationalControllerCard';
+import { DistrictCommandCentre } from './DistrictCommandCentre';
+import { WhatIfControlRoom } from './WhatIfControlRoom';
+import { TamperEvidentAuditTrail } from './TamperEvidentAuditTrail';
+import { ModelGovernanceCard } from './ModelGovernanceCard';
 
 type OperatorTab =
   | 'dashboard'
+  | 'command-centre'
+  | 'what-if'
+  | 'audit-trail'
+  | 'model-governance'
   | 'simulator'
   | 'queue'
   | 'bookings'
@@ -55,7 +64,6 @@ export const OperatorDashboard: React.FC = () => {
   const {
     currentQueue,
     expectedArrivals,
-    capacityPerHour,
     congestionRisk,
     farmerAdvisorySent,
     backupStaffActive
@@ -110,6 +118,10 @@ export const OperatorDashboard: React.FC = () => {
           <nav className="space-y-1 text-xs font-semibold">
             {[
               { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
+              { id: 'command-centre', label: 'Regional Control', icon: <Building2 className="h-4 w-4 text-gov-700" />, badge: 'Cluster' },
+              { id: 'what-if', label: 'What-If Control Room', icon: <Zap className="h-4 w-4 text-amber-600" />, badge: 'AI Levers' },
+              { id: 'audit-trail', label: 'Tamper Audit Trail', icon: <ShieldCheck className="h-4 w-4 text-emerald-700" />, badge: 'SHA-256' },
+              { id: 'model-governance', label: 'Model Governance', icon: <Brain className="h-4 w-4 text-purple-700" />, badge: 'Metrics' },
               { id: 'simulator', label: 'Crowd Shift Simulator', icon: <Sliders className="h-4 w-4 text-emerald-700" />, badge: 'Simulate' },
               { id: 'queue', label: 'Queue Management', icon: <Users className="h-4 w-4" /> },
               { id: 'bookings', label: 'Bookings Register', icon: <CalendarDays className="h-4 w-4" /> },
@@ -145,6 +157,18 @@ export const OperatorDashboard: React.FC = () => {
 
       {/* 2. MAIN OPERATOR CONTENT VIEWPORT */}
       <div className="flex-1 min-w-0 space-y-6">
+        {/* REGIONAL COMMAND CENTRE TAB */}
+        {activeTab === 'command-centre' && <DistrictCommandCentre />}
+
+        {/* WHAT-IF SCENARIO CONTROL ROOM TAB */}
+        {activeTab === 'what-if' && <WhatIfControlRoom />}
+
+        {/* TAMPER-EVIDENT AUDIT TRAIL TAB */}
+        {activeTab === 'audit-trail' && <TamperEvidentAuditTrail />}
+
+        {/* AI MODEL GOVERNANCE & TECHNICAL DEFENSIBILITY TAB */}
+        {activeTab === 'model-governance' && <ModelGovernanceCard />}
+
         {/* CROWD SHIFT SIMULATOR TAB (Section 6 & Module 3) */}
         {activeTab === 'simulator' && (
           <div className="space-y-4">

@@ -11,9 +11,11 @@ import {
   CheckCircle2,
   Sparkles,
   Info,
-  Layers
+  Layers,
+  Zap
 } from 'lucide-react';
 import { ArchitectureDemoModal } from './ArchitectureDemoModal';
+import { CrisisCascadeModal } from './CrisisCascadeModal';
 
 interface DemoToolbarProps {
   isPhoneFrameMode?: boolean;
@@ -38,6 +40,7 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
 
   const { role, setRole } = useAuth();
   const [isArchModalOpen, setIsArchModalOpen] = useState<boolean>(false);
+  const [isCrisisModalOpen, setIsCrisisModalOpen] = useState<boolean>(false);
   const currentStepData = DEMO_STEPS[currentStep - 1] || DEMO_STEPS[0];
 
   return (
@@ -133,6 +136,16 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
               )}
             </button>
 
+            {/* SIH Grand Finale 10-Step Crisis Cascade Simulation Button */}
+            <button
+              onClick={() => setIsCrisisModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded font-black border border-rose-500 bg-rose-700 hover:bg-rose-600 text-white text-xs transition-all shadow-md animate-pulse"
+              title="Trigger real-time 10-step crisis and automated AI mitigation cascade"
+            >
+              <Zap className="h-3.5 w-3.5 fill-yellow-400 text-yellow-300" />
+              <span>🚨 SIMULATE SURGE CRISIS</span>
+            </button>
+
             {/* Architecture & Demo Flow Modal Trigger */}
             <button
               onClick={() => setIsArchModalOpen(true)}
@@ -198,6 +211,12 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
       <ArchitectureDemoModal
         isOpen={isArchModalOpen}
         onClose={() => setIsArchModalOpen(false)}
+      />
+
+      {/* SIH 10-Step Crisis & Resolution Simulation Modal */}
+      <CrisisCascadeModal
+        isOpen={isCrisisModalOpen}
+        onClose={() => setIsCrisisModalOpen(false)}
       />
     </div>
   );

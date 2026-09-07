@@ -11,7 +11,8 @@ import {
   PhoneCall,
   Hash,
   UserPlus,
-  Zap
+  Zap,
+  Sliders
 } from 'lucide-react';
 
 interface FarmerHeaderProps {
@@ -24,6 +25,7 @@ interface FarmerHeaderProps {
   onOpenIvr?: () => void;
   onOpenUssd?: () => void;
   onOpenRegister?: () => void;
+  onOpenPreferences?: () => void;
 }
 
 export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
@@ -35,7 +37,8 @@ export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
   isRefreshing = false,
   onOpenIvr,
   onOpenUssd,
-  onOpenRegister
+  onOpenRegister,
+  onOpenPreferences
 }) => {
   const { t, language, setLanguage } = useLanguage();
 
@@ -67,6 +70,17 @@ export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
 
         {/* Quick Simulator & Registration Launchers */}
         <div className="flex items-center gap-1.5">
+          {onOpenPreferences && (
+            <button
+              onClick={onOpenPreferences}
+              className="flex items-center gap-1 bg-gov-700 hover:bg-gov-600 text-emerald-200 border border-emerald-400/30 px-2 py-1 rounded-lg text-[11px] font-bold shadow-xs transition-colors"
+              title="Set Travel Distance & Centre Allocation Preferences"
+            >
+              <Sliders className="h-3 w-3 text-emerald-300" />
+              <span>Prefs</span>
+            </button>
+          )}
+
           {onOpenRegister && (
             <button
               onClick={onOpenRegister}

@@ -308,3 +308,180 @@ export interface SystemPolicy {
   targetMspRate: number; // e.g. 2320
 }
 
+// ==========================================
+// SIH 2026 GRAND FINALE INNOVATION EXTENSIONS
+// ==========================================
+
+export type PriorityCategory =
+  | 'STANDARD'
+  | 'SMALL_HOLDER'
+  | 'PERISHABLE_PRODUCE'
+  | 'SENIOR_CITIZEN'
+  | 'EMERGENCY';
+
+export interface FarmerPreferences {
+  farmerId: string;
+  travelToleranceKm: number; // 5, 10, 15, 25, 999 for flexible
+  priorityCategory: PriorityCategory;
+  optInAutoReallocation: boolean;
+  vehicleType: 'Tractor Trolley' | 'Mini Truck (Pick-up)' | 'Bullock Cart' | 'Trailer';
+  preferredDays: string[];
+  disruptionNotificationChannel: CommunicationChannel;
+  maxAcceptableWaitMinutes: number;
+}
+
+export interface CentreAllocationWeights {
+  waitWeight: number;       // default 0.30
+  distanceWeight: number;   // default 0.25
+  preferenceWeight: number; // default 0.20
+  capacityWeight: number;   // default 0.15
+  slotWeight: number;       // default 0.10
+}
+
+export interface CentreAllocationScore {
+  centreId: string;
+  centreName: string;
+  distanceKm: number;
+  estimatedWaitMinutes: number;
+  currentUtilizationPct: number;
+  availableSlots: number;
+  waitScore: number;
+  distScore: number;
+  prefScore: number;
+  capScore: number;
+  slotScore: number;
+  compositeScore: number; // 0 - 100
+  isRecommended: boolean;
+  matchReason: string;
+}
+
+export interface BetterOptionProposal {
+  currentCentreId: string;
+  currentCentreName: string;
+  currentWaitMinutes: number;
+  recommendedCentreId: string;
+  recommendedCentreName: string;
+  recommendedWaitMinutes: number;
+  waitDeltaMinutes: number; // e.g. -39 min saved
+  distanceDeltaKm: number;  // e.g. +4.2 km
+  matchPercentage: number;  // e.g. 94%
+  primaryReason: string;
+  status: 'OFFERED' | 'ACCEPTED' | 'DECLINED';
+  auditTimestamp: string;
+}
+
+export type VirtualQueueStage =
+  | 'BOOKED'
+  | 'SLOT_ACTIVE'
+  | 'IN_TRANSIT'
+  | 'ARRIVED'
+  | 'SECURITY_CHECKED'
+  | 'WEIGHING'
+  | 'UNLOADING'
+  | 'COMPLETED';
+
+export interface VirtualToken {
+  tokenNumber: string; // e.g. 'AG-1048'
+  farmerId: string;
+  farmerName: string;
+  centreId: string;
+  centreName: string;
+  stage: VirtualQueueStage;
+  queuePosition: number;
+  tokensAhead: number;
+  dynamicEstimatedArrivalTime: string;
+  estimatedWaitMinutes: number;
+  turnApproachingAlert: boolean; // true when tokensAhead <= 3
+  gateNumber: string;
+  bayNumber: string;
+  issuedAt: string;
+  lastStageUpdate: string;
+}
+
+export interface HourlyArrivalWaitEstimate {
+  hourLabel: string; // "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"
+  hour24: number;
+  expectedArrivals: number;
+  estimatedWaitMinutes: number;
+  congestionLevel: 'LOW' | 'MODERATE' | 'HIGH';
+  isRecommended: boolean;
+  recommendationReason: string;
+}
+
+export interface WhatIfLevers {
+  extraArrivals: number;            // 0 - 50
+  surgePercentage: number;          // 0 - 100%
+  capacityModifierPct: number;      // -50% to +50%
+  weighbridgesOffline: number;      // 0, 1, 2
+  temporaryCounterAdded: boolean;
+  advisoryShiftAcceptancePct: number;// 20% - 90%
+}
+
+export interface WhatIfSimulationResult {
+  withoutIntervention: {
+    peakWaitMinutes: number;
+    queueLength: number;
+    overCapacityHours: number;
+    riskLevel: CongestionRisk;
+  };
+  withIntervention: {
+    peakWaitMinutes: number;
+    queueLength: number;
+    waitReductionMinutes: number;
+    riskLevel: CongestionRisk;
+    farmersShifted: number;
+    centreUtilizationPct: number;
+  };
+  calculatedAt: string;
+}
+
+export type AiInterventionType =
+  | 'DISPATCH_SMART_ARRIVAL'
+  | 'REDIRECT_FLEXIBLE_BOOKINGS'
+  | 'OPEN_AUXILIARY_GATE'
+  | 'DEPLOY_MOBILE_MOISTURE_VAN';
+
+export interface AiInterventionProposal {
+  id: string;
+  centreId: string;
+  centreName: string;
+  title: string;
+  actionType: AiInterventionType;
+  impactEstimate: string;
+  confidencePct: number;
+  state: 'PENDING_REVIEW' | 'APPROVED' | 'MODIFIED' | 'REJECTED';
+  reviewedBy?: string;
+  reviewedAt?: string;
+  operatorNotes?: string;
+}
+
+export interface TamperEvidentEvent {
+  index: number;
+  timestamp: string;
+  action: string;
+  actor: string;
+  role: UserRole;
+  payloadHash: string;
+  previousHash: string;
+  hash: string;
+  signature: string;
+  verified: boolean;
+}
+
+export type CentreHealthStatus = 'STABLE' | 'WATCH' | 'HIGH_LOAD' | 'CRITICAL';
+
+export interface CentreNetworkNode {
+  centreId: string;
+  name: string;
+  location: string;
+  distanceFromCentralKm: number;
+  healthStatus: CentreHealthStatus;
+  currentQueue: number;
+  utilizationPct: number;
+  averageWaitMinutes: number;
+  activeWeighbridges: number;
+  totalWeighbridges: number;
+  spareCapacitySlots: number;
+}
+
+
