@@ -114,14 +114,21 @@ const MainAppContent: React.FC<MainAppContentProps> = ({
 };
 
 const RootApp: React.FC = () => {
+  const { login } = useAuth();
   const [currentView, setCurrentView] = useState<'landing' | 'app'>('landing');
   const [isBasicPhoneOpen, setIsBasicPhoneOpen] = useState<boolean>(false);
+
+  const handleLaunchRole = (targetRole: 'FARMER' | 'OPERATOR' | 'ADMIN') => {
+    login(targetRole);
+    setCurrentView('app');
+  };
 
   return (
     <>
       {currentView === 'landing' ? (
         <LandingPage
-          onExplorePlatform={() => setCurrentView('app')}
+          onExplorePlatform={() => handleLaunchRole('FARMER')}
+          onLaunchRole={handleLaunchRole}
           onOpenPhoneSimulator={() => setIsBasicPhoneOpen(true)}
         />
       ) : (

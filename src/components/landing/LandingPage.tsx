@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { LivingAgriculturalLandscape } from './LivingAgriculturalLandscape';
+import { VisualFarmerJourney } from './VisualFarmerJourney';
+import { InteractiveCentreVisual } from './InteractiveCentreVisual';
+import { QueueComparisonVisual } from './QueueComparisonVisual';
+import { IntelligenceDataFlowVisual } from './IntelligenceDataFlowVisual';
 import { CrowdShiftSimulator } from '../operator/CrowdShiftSimulator';
 import {
   ArrowRight,
@@ -22,18 +27,46 @@ import {
   ChevronRight,
   Radio,
   FileCheck,
-  UserCheck
+  UserCheck,
+  Sun,
+  Moon,
+  Lock,
+  Compass,
+  Ticket,
+  Scale
 } from 'lucide-react';
 
 interface LandingPageProps {
   onExplorePlatform: () => void;
+  onLaunchRole?: (role: 'FARMER' | 'OPERATOR' | 'ADMIN') => void;
   onOpenPhoneSimulator?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onExplorePlatform,
+  onLaunchRole,
   onOpenPhoneSimulator
 }) => {
+  // Dark mode state: remembers user preference, respects system preference
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const saved = localStorage.getItem('agriflow_theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('agriflow_theme', isDark ? 'dark' : 'light');
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    setIsDark(prev => !prev);
+  };
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -41,181 +74,323 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   };
 
+  const handleFarmerClick = () => {
+    if (onLaunchRole) {
+      onLaunchRole('FARMER');
+    } else {
+      onExplorePlatform();
+    }
+  };
+
+  const handleOperatorClick = () => {
+    if (onLaunchRole) {
+      onLaunchRole('OPERATOR');
+    } else {
+      onExplorePlatform();
+    }
+  };
+
+  const handleAdminClick = () => {
+    if (onLaunchRole) {
+      onLaunchRole('ADMIN');
+    } else {
+      onExplorePlatform();
+    }
+  };
+
   return (
-    <div className="bg-[#fcfbf9] text-slate-900 font-sans selection:bg-emerald-100 selection:text-emerald-900">
-      {/* Top Public Infrastructure Brand Header */}
-      <nav className="border-b border-slate-200 bg-white/95 backdrop-blur-xs sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+    <div
+      className={`min-h-screen font-sans selection:bg-emerald-200 selection:text-emerald-950 transition-colors duration-500 ${
+        isDark ? 'bg-[#030712] text-slate-100' : 'bg-[#fcfbf9] text-slate-900'
+      }`}
+    >
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 1. TOP PUBLIC INFRASTRUCTURE BRAND HEADER */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <nav
+        className={`border-b sticky top-0 z-50 backdrop-blur-md transition-colors duration-300 ${
+          isDark
+            ? 'bg-[#030712]/90 border-slate-800'
+            : 'bg-white/95 border-slate-200 shadow-xs'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+          {/* Logo & Brand Identity */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gov-800 text-white shadow-xs">
+            <div className="flex items-center justify-center h-10 w-10 rounded-2xl bg-gradient-to-br from-gov-800 to-gov-900 dark:from-emerald-700 dark:to-gov-900 text-white shadow-sm border border-emerald-400/30">
               <span className="text-xl">🌾</span>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg font-black tracking-tight text-slate-900">AgriFlow</span>
-                <span className="bg-gov-100 text-gov-800 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-gov-200 uppercase">
-                  SIH Public Service
+                <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                  AgriFlow
+                </span>
+                <span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800 uppercase">
+                  SIH 2026 Grand Finale
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                Operational Intelligence & Inclusive Communication
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+                Predict. Coordinate. Reach Every Farmer.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Quick Navigation Links */}
+          <div className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600 dark:text-slate-300">
             <button
-              onClick={() => scrollToSection('section-sim')}
-              className="hidden md:inline-flex text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5"
+              onClick={() => scrollToSection('section-journey')}
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
             >
-              Crowd Shift Simulator
+              8-Step Flow
             </button>
             <button
-              onClick={() => scrollToSection('section-channels')}
-              className="hidden md:inline-flex text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5"
+              onClick={() => scrollToSection('section-centre-visual')}
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
             >
-              Inclusive Reach
+              Mandi Architecture
             </button>
+            <button
+              onClick={() => scrollToSection('section-comparison')}
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+            >
+              Queue Demo
+            </button>
+            <button
+              onClick={() => scrollToSection('section-pipeline')}
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+            >
+              Data Pipeline
+            </button>
+            <button
+              onClick={() => scrollToSection('section-trust')}
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+            >
+              Farmer Trust
+            </button>
+          </div>
+
+          {/* Action Tools & Role Fast Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`p-2 rounded-xl border transition-colors ${
+                isDark
+                  ? 'bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700'
+                  : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+              }`}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle Theme"
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
+            {/* Basic Phone Simulator Modal Trigger */}
             {onOpenPhoneSimulator && (
               <button
                 onClick={onOpenPhoneSimulator}
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-xl transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-xl transition-colors"
               >
+                <PhoneCall className="h-3.5 w-3.5" />
                 <span>📞 Basic Phone</span>
               </button>
             )}
+
+            {/* Primary Farmer Navigation Button */}
             <button
-              onClick={onExplorePlatform}
-              className="py-2 px-4 rounded-xl bg-gov-800 hover:bg-gov-900 text-white font-extrabold text-xs shadow-sm transition-colors flex items-center gap-1.5"
+              onClick={handleFarmerClick}
+              className="py-2 px-3.5 sm:px-4 rounded-xl bg-gov-800 hover:bg-gov-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-black text-xs shadow-sm transition-all flex items-center gap-1.5"
             >
-              <span>Explore Platform</span>
+              <span>👨‍🌾 I'm a Farmer</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
       </nav>
 
-      {/* ============================================================ */}
-      {/* SECTION 1 — HERO                                             */}
-      {/* ============================================================ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-16 lg:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* LEFT SIDE */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-900">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Procurement Coordination Intelligence</span>
-            </div>
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 2. HERO SECTION — LIVING AGRICULTURAL LANDSCAPE WITH PARALLAX */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden border-b border-slate-200 dark:border-slate-800">
+        {/* Animated Landscape Canvas as Hero Background */}
+        <div className="absolute inset-0">
+          <LivingAgriculturalLandscape isDark={isDark} />
+        </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.15]">
-              Farmers book slots. <br />
-              <span className="text-gov-800 underline decoration-amber-400 decoration-wavy decoration-2">
-                But arrivals are still unpredictable.
-              </span>
-            </h1>
+        {/* Soft Contrast Scrim to Ensure Flawless Text Readability */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+            isDark
+              ? 'bg-gradient-to-r from-[#030712]/95 via-[#030712]/75 to-transparent'
+              : 'bg-gradient-to-r from-white/95 via-white/80 to-transparent'
+          }`}
+        />
 
-            <p className="text-base text-slate-600 leading-relaxed max-w-xl">
-              AgriFlow helps agricultural procurement centres predict near-term arrival pressure, understand possible congestion root causes, and coordinate farmers before queues become severe.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <button
-                onClick={onExplorePlatform}
-                className="py-3.5 px-6 rounded-2xl bg-gov-800 hover:bg-gov-900 text-white font-black text-sm shadow-md transition-all flex items-center gap-2"
-              >
-                <span>Explore Platform</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-
-              <button
-                onClick={() => scrollToSection('section-workflow')}
-                className="py-3.5 px-5 rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm shadow-xs transition-colors"
-              >
-                See How It Works
-              </button>
-            </div>
-
-            <div className="pt-4 flex items-center gap-6 text-xs text-slate-500 border-t border-slate-200">
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                <span>Non-invasive to official slot portals</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                <span>Decision support for operators</span>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT SIDE: Realistic Product Dashboard Preview */}
-          <div className="lg:col-span-6">
-            <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-2xl space-y-4">
-              {/* Centre Header */}
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-9 w-9 rounded-xl bg-gov-800 text-white flex items-center justify-center">
-                    <Building2 className="h-5 w-5 text-emerald-300" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-900">
-                      Singanallur Procurement Centre
-                    </h3>
-                    <p className="text-[11px] text-slate-500">Coimbatore District, Tamil Nadu</p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
-                  ● Shift: 08:00–19:00
-                </span>
+        {/* Hero Content Grid */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* LEFT COLUMN: HERO HEADLINES & FARMER-FIRST CALL TO ACTION */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/90 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-xs font-bold text-emerald-900 dark:text-emerald-200 backdrop-blur-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-ping" />
+                <span>Agricultural Procurement Coordination Intelligence</span>
               </div>
 
-              {/* Status Banner */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase">Current Queue</span>
-                  <p className="text-2xl font-black font-mono text-slate-900 mt-0.5">18 Farmers</p>
-                  <span className="text-[10px] text-slate-500">At weighbridge & gate approach</span>
-                </div>
-
-                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl">
-                  <span className="text-[10px] font-bold text-rose-800 uppercase">Next 2 Hours</span>
-                  <p className="text-xs font-black text-rose-900 mt-1 flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-rose-600 animate-ping"></span>
-                    <span>HIGH ARRIVAL PRESSURE</span>
-                  </p>
-                  <span className="text-[10px] text-rose-700">Projected: 38 arrivals vs 20/hr cap</span>
-                </div>
+              {/* Exact Hero Headline (Prompt Section 6) */}
+              <div className="space-y-1">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+                  Smarter Scheduling. <br />
+                  Shorter Queues. <br />
+                  <span className="text-gov-800 dark:text-emerald-400 underline decoration-amber-400 decoration-wavy decoration-2">
+                    Happier Farmers.
+                  </span>
+                </h1>
               </div>
 
-              {/* Main Reasons (Deterministic Explainability) */}
-              <div className="space-y-1.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block mb-1">
-                  Why is congestion predicted?
-                </span>
-                <div className="flex items-center gap-2 text-slate-700">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>More bookings before noon:</strong> 38 farmers booked between 10 AM – 12 PM.</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-700">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>Queue increasing:</strong> Inflow velocity is +24% higher than morning baseline.</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-700">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span><strong>Processing slower:</strong> Single weighbridge operation throughput at 18/hr.</span>
-                </div>
-              </div>
+              {/* Exact Supporting Text (Prompt Section 6) */}
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl font-medium">
+                AgriFlow helps farmers find the right procurement centre, book smarter slots and know
+                when to arrive — without spending hours waiting in line.
+              </p>
 
-              {/* Suggested Action Bar */}
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+              {/* ───────────────────────────────────────────────────────── */}
+              {/* FARMER-FIRST VISUAL HIERARCHY (Prompt Section 7)          */}
+              {/* ───────────────────────────────────────────────────────── */}
+              <div className="pt-2 space-y-4">
+                {/* 1. Primary Action: I AM A FARMER (Commanding Public Button) */}
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-emerald-800">Suggested Action</span>
-                  <p className="text-xs font-bold text-emerald-950">Test arrival redistribution (Shift 8 to 2 PM)</p>
+                  <button
+                    onClick={handleFarmerClick}
+                    className="w-full sm:w-auto py-4 px-8 rounded-2xl bg-gradient-to-r from-emerald-700 via-gov-800 to-gov-900 hover:from-emerald-800 hover:to-gov-950 text-white font-black text-base shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 border border-emerald-400/30 group"
+                  >
+                    <span className="text-xl">👨‍🌾</span>
+                    <span className="tracking-wide">I AM A FARMER</span>
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 ml-1 font-medium">
+                    Free for all Indian farmers • No password required • Smartphone, SMS or Voice
+                  </p>
                 </div>
-                <button
-                  onClick={() => scrollToSection('section-sim')}
-                  className="py-1.5 px-3 bg-gov-800 hover:bg-gov-900 text-white text-xs font-black rounded-lg shadow-xs transition-colors"
+
+                {/* 2. Secondary Staff & Admin Actions (Clearly Distinct Authorized Personnel Access) */}
+                <div
+                  className={`p-3.5 rounded-2xl border max-w-lg backdrop-blur-sm space-y-2 ${
+                    isDark
+                      ? 'bg-slate-900/80 border-slate-800'
+                      : 'bg-white/85 border-slate-200 shadow-xs'
+                  }`}
                 >
-                  Simulate Action →
+                  <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
+                    <span className="flex items-center gap-1">
+                      <Lock className="h-3 w-3 text-slate-400" /> Authorized Personnel Access
+                    </span>
+                    <span>Role-Based Auth (RBAC)</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button
+                      onClick={handleOperatorClick}
+                      className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                        isDark
+                          ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-300'
+                      }`}
+                    >
+                      <Building2 className="h-4 w-4 text-gov-700 dark:text-emerald-400" />
+                      <span>CENTRE STAFF LOGIN</span>
+                    </button>
+
+                    <button
+                      onClick={handleAdminClick}
+                      className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                        isDark
+                          ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-300'
+                      }`}
+                    >
+                      <ShieldCheck className="h-4 w-4 text-amber-600" />
+                      <span>ADMIN LOGIN</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: LIVE DATA VISUALIZATION PANEL (Prompt Section 5) */}
+            <div className="lg:col-span-5">
+              <div
+                className={`rounded-3xl border-2 p-5 sm:p-6 shadow-2xl backdrop-blur-md space-y-4 transition-all ${
+                  isDark
+                    ? 'bg-slate-900/90 border-emerald-500/40 text-white'
+                    : 'bg-white/95 border-emerald-300 text-slate-900'
+                }`}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span className="text-xs font-black uppercase tracking-wider font-mono">
+                      AGRIFLOW LIVE INTEL
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    Coimbatore Cluster
+                  </span>
+                </div>
+
+                {/* Live Centre Status Ticker (Section 5 Requirement) */}
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                    <span className="font-bold">Centre A (Avinashi Hub)</span>
+                    <span className="px-2 py-0.5 rounded font-mono font-black text-rose-700 dark:text-rose-400 bg-rose-100 dark:bg-rose-950">
+                      🔴 HIGH (65m wait)
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                    <span className="font-bold">Centre B (Sulur Yard)</span>
+                    <span className="px-2 py-0.5 rounded font-mono font-black text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950">
+                      🟡 MODERATE (18m wait)
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800">
+                    <span className="font-black text-emerald-950 dark:text-emerald-200">
+                      Centre C (Singanallur APMC)
+                    </span>
+                    <span className="px-2 py-0.5 rounded font-mono font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900">
+                      🟢 LOW (12m wait)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Recommendation Highlight & "Why?" Explanation */}
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-gov-800 text-white space-y-2 shadow-md">
+                  <div className="flex items-center justify-between text-[11px] uppercase font-bold text-emerald-200">
+                    <span className="flex items-center gap-1">
+                      <Sparkles className="h-3.5 w-3.5" /> Optimal Recommendation
+                    </span>
+                    <span className="font-mono">Save ~40 Mins</span>
+                  </div>
+
+                  <h4 className="text-base font-black">Recommended: Centre C (Singanallur)</h4>
+
+                  <div className="pt-2 border-t border-emerald-400/30 text-xs text-emerald-100 space-y-1 leading-relaxed">
+                    <strong>Why?</strong>
+                    <p className="text-[11px]">
+                      Lowest predicted waiting time + 28 tonnes available daily capacity. Weighbridge
+                      #1 is operating with zero bottleneck.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleFarmerClick}
+                  className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <span>Book Slot at Centre C Now</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
@@ -223,649 +398,238 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* SECTION 2 — REAL PROBLEM                                      */}
-      {/* ============================================================ */}
-      <section className="bg-white border-y border-slate-200 py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <div>
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              The Operational Reality
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
-              The gap begins after booking.
-            </h2>
-          </div>
-
-          {/* Visual: Booked -> Expected -> Actual */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
-            <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
-              <span className="text-xs font-bold text-slate-500 uppercase">1. Booked</span>
-              <p className="text-2xl font-black font-mono text-slate-900">40 Farmers</p>
-              <p className="text-xs text-slate-500">Slots registered across official booking portal for today</p>
-            </div>
-
-            <div className="p-5 rounded-2xl border-2 border-amber-300 bg-amber-50/70 space-y-2">
-              <span className="text-xs font-bold text-amber-800 uppercase">2. Expected Arrival</span>
-              <p className="text-2xl font-black font-mono text-amber-950">35–45 Farmers</p>
-              <p className="text-xs text-amber-800">Model estimates accounting for travel distance and weather</p>
-            </div>
-
-            <div className="p-5 rounded-2xl border-2 border-rose-300 bg-rose-50/70 space-y-2">
-              <span className="text-xs font-bold text-rose-800 uppercase">3. Actual Arrival</span>
-              <p className="text-2xl font-black font-mono text-rose-950">Unpredictable</p>
-              <p className="text-xs text-rose-800">Farmers arrive simultaneously at 10 AM, creating long queues</p>
-            </div>
-          </div>
-
-          <p className="text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            A booking system records planned visits. It does not necessarily show how many farmers will actually arrive together. AgriFlow fills this critical operational gap without disrupting existing registration records.
-          </p>
-        </div>
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 3. VISUAL STORY: FARM → PROCUREMENT (Prompt Section 3)       */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-journey"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800"
+      >
+        <VisualFarmerJourney isDark={isDark} />
       </section>
 
-      {/* ============================================================ */}
-      {/* SECTION 3 — WORKFLOW COMPARISON                               */}
-      {/* ============================================================ */}
-      <section id="section-workflow" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center space-y-2 mb-10">
-          <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-            Process Evolution
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-            From Reactive Waiting to Proactive Coordination
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* EXISTING WORKFLOW */}
-          <div className="rounded-3xl border border-slate-300 bg-white p-6 shadow-xs space-y-4">
-            <div className="border-b border-slate-200 pb-3 flex items-center justify-between">
-              <h3 className="text-sm font-black text-slate-700 uppercase tracking-wider">Existing Workflow</h3>
-              <span className="text-xs text-slate-400 font-mono">Traditional Model</span>
-            </div>
-            <div className="space-y-3">
-              {[
-                { step: 'Register', desc: 'Farmer registers on state portal' },
-                { step: 'Book', desc: 'Farmer picks date & broad time slot' },
-                { step: 'Visit', desc: 'Farmer drives tractor to procurement centre' },
-                { step: 'Wait', desc: 'Long congestion queues at gate approach' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                  <span className="h-6 w-6 rounded-full bg-slate-200 text-slate-700 font-mono font-bold flex items-center justify-center text-[11px]">
-                    {idx + 1}
-                  </span>
-                  <div>
-                    <span className="font-bold text-slate-900 block">{item.step}</span>
-                    <span className="text-slate-500 text-[11px]">{item.desc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AGRIFLOW WORKFLOW */}
-          <div className="rounded-3xl border-2 border-emerald-300 bg-emerald-50/50 p-6 shadow-md space-y-4">
-            <div className="border-b border-emerald-200 pb-3 flex items-center justify-between">
-              <h3 className="text-sm font-black text-emerald-950 uppercase tracking-wider flex items-center gap-2">
-                <span>AgriFlow Workflow</span>
-                <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded font-mono">
-                  Continuous Flow
-                </span>
-              </h3>
-              <span className="text-xs text-emerald-700 font-mono font-bold">Proactive</span>
-            </div>
-            <div className="space-y-2">
-              {[
-                { step: 'Register & Book', tag: 'Existing Portals', desc: 'Farmer books slot in state system' },
-                { step: 'Predict & Explain', tag: 'AgriFlow Layer', desc: 'Near-term arrival velocity & 3 root causes' },
-                { step: 'Simulate', tag: 'Innovation', desc: 'Operator tests arrival shift before acting' },
-                { step: 'Coordinate & Reach', tag: 'Multi-Channel', desc: 'Targeted advisories via App, SMS, Voice, IVR' },
-                { step: 'Arrive Smoothly', tag: 'Result', desc: 'Balanced gate inflow with minimal wait times' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-emerald-200 shadow-xs text-xs">
-                  <div className="flex items-center gap-3">
-                    <span className="h-6 w-6 rounded-full bg-emerald-600 text-white font-mono font-bold flex items-center justify-center text-[11px]">
-                      {idx + 1}
-                    </span>
-                    <div>
-                      <span className="font-bold text-slate-900 block">{item.step}</span>
-                      <span className="text-slate-500 text-[11px]">{item.desc}</span>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    {item.tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 4. INTERACTIVE PROCUREMENT CENTRE VISUAL (Prompt Section 4)  */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-centre-visual"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800"
+      >
+        <InteractiveCentreVisual isDark={isDark} />
       </section>
 
-      {/* ============================================================ */}
-      {/* SECTION 4 — PREDICT ARRIVAL PRESSURE                          */}
-      {/* ============================================================ */}
-      <section className="bg-white border-y border-slate-200 py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              Predictive Timeline
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 5. ANIMATED QUEUE DEMONSTRATION (Prompt Section 8)           */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-comparison"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800"
+      >
+        <QueueComparisonVisual isDark={isDark} />
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 6. AI & DATA FLOW PIPELINE VISUAL (Prompt Section 9)         */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-pipeline"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800"
+      >
+        <IntelligenceDataFlowVisual isDark={isDark} />
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 7. CROWD SHIFT SIMULATOR INTERACTIVE LAB                     */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-sim"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800"
+      >
+        <div className="space-y-6">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-gov-800 dark:text-emerald-400 bg-gov-50 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-gov-200 dark:border-emerald-800">
+              Interactive Decision Support
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              See pressure before queues peak.
-            </h2>
-            <p className="text-xs text-slate-500 max-w-xl mx-auto">
-              Categorical risk estimates based on booking counts, processing throughput, and gate clearance rates.
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Crowd Shift Simulator
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              Test arrival redistribution before communicating advisories with farmers.
             </p>
           </div>
 
-          {/* Timeline Chart Display */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {[
-              { time: '09:00 AM', status: 'LOW', color: 'border-emerald-300 bg-emerald-50 text-emerald-800', arrivals: 12, rate: '18/hr', conf: 'High' },
-              { time: '10:00 AM', status: 'MODERATE', color: 'border-amber-300 bg-amber-50 text-amber-800', arrivals: 22, rate: '18/hr', conf: 'High' },
-              { time: '11:00 AM', status: 'HIGH', color: 'border-rose-400 bg-rose-50 text-rose-800', arrivals: 38, rate: '18/hr', conf: 'High' },
-              { time: '12:00 PM', status: 'HIGH', color: 'border-rose-400 bg-rose-50 text-rose-800', arrivals: 42, rate: '18/hr', conf: 'Medium' },
-              { time: '02:00 PM', status: 'LOW', color: 'border-emerald-300 bg-emerald-50 text-emerald-800', arrivals: 9, rate: '20/hr', conf: 'High' }
-            ].map((slot, idx) => (
-              <div key={idx} className={`p-4 rounded-2xl border-2 ${slot.color} space-y-2`}>
-                <div className="flex items-center justify-between">
-                  <span className="font-mono font-bold text-xs text-slate-700">{slot.time}</span>
-                  <span className="text-[10px] font-bold uppercase">{slot.status}</span>
-                </div>
-                <p className="text-2xl font-black font-mono text-slate-900">{slot.arrivals}</p>
-                <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 space-y-0.5">
-                  <p>Processing: <strong>{slot.rate}</strong></p>
-                  <p>Confidence: <strong>{slot.conf}</strong></p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-xs text-center text-slate-400 font-medium">
-            * Predictions are categorized into risk tiers (Low / Moderate / High). AgriFlow does not claim 100% precision.
-          </p>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 5 — EXPLAIN THE PREDICTION                            */}
-      {/* ============================================================ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center space-y-2 mb-10">
-          <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-            Deterministic Explainability
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-            Know why before you act.
-          </h2>
-          <p className="text-xs text-slate-500 max-w-xl mx-auto">
-            Operators see the main factors behind the risk before deciding what action to take.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-3">
-            <span className="text-xs font-black font-mono text-gov-800 uppercase tracking-wider">
-              Factor 1
-            </span>
-            <h3 className="text-base font-black text-slate-900">MORE MORNING BOOKINGS</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Booking concentration is significantly higher before noon. Over 38 farmers are scheduled across overlapping 10 AM – 12 PM intervals.
-            </p>
-            <div className="text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100">
-              Metric: +35% booking density
-            </div>
-          </div>
-
-          <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-3">
-            <span className="text-xs font-black font-mono text-gov-800 uppercase tracking-wider">
-              Factor 2
-            </span>
-            <h3 className="text-base font-black text-slate-900">QUEUE INCREASING</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Current arrivals at the gate approach are increasing faster than processing capacity (+24% velocity over morning baseline).
-            </p>
-            <div className="text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100">
-              Metric: 18 tractors queued
-            </div>
-          </div>
-
-          <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-3">
-            <span className="text-xs font-black font-mono text-gov-800 uppercase tracking-wider">
-              Factor 3
-            </span>
-            <h3 className="text-base font-black text-slate-900">PROCESSING SLOWER</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              The current processing rate is below the recent average due to auxiliary moisture meter calibration and single weighbridge lane operation.
-            </p>
-            <div className="text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100">
-              Metric: 18/hr vs 22/hr target
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 6 — CROWD SHIFT SIMULATOR (KEY INNOVATION)            */}
-      {/* ============================================================ */}
-      <section id="section-sim" className="bg-slate-100 border-y border-slate-200 py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full uppercase tracking-wider">
-              Core Innovation
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Test the action before changing the plan.
-            </h2>
-            <p className="text-xs text-slate-600 max-w-xl mx-auto">
-              Operators can simulate arrival redistribution before communicating with farmers. Decision support without automatic record alterations.
-            </p>
-          </div>
-
-          {/* Embedded Interactive Simulator Widget */}
-          <CrowdShiftSimulator onApplyPlan={() => onExplorePlatform()} />
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 7 — HUMAN CONTROL                                     */}
-      {/* ============================================================ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center space-y-2 mb-10">
-          <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-            Governance & Ethics
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-            The system suggests. People decide.
-          </h2>
-          <p className="text-xs text-slate-600 max-w-xl mx-auto">
-            AgriFlow does not automatically change farmer bookings or official schedules. Every coordination action passes through operator review.
-          </p>
-        </div>
-
-        {/* 6-Step Workflow */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-center">
-          {[
-            { step: '1', title: 'System Detects', sub: 'Calculates arrival velocity' },
-            { step: '2', title: 'System Explains', sub: 'Presents 3 root causes' },
-            { step: '3', title: 'System Simulates', sub: 'Models redistribution' },
-            { step: '4', title: 'Operator Reviews', sub: 'Inspects proposal' },
-            { step: '5', title: 'Operator Approves', sub: 'Human signs off' },
-            { step: '6', title: 'Farmers Contacted', sub: 'Inclusive delivery' }
-          ].map((item, idx) => (
-            <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
-              <span className="h-7 w-7 rounded-full bg-gov-800 text-white font-mono font-black text-xs inline-flex items-center justify-center">
-                {item.step}
-              </span>
-              <h4 className="text-xs font-black text-slate-900 pt-1">{item.title}</h4>
-              <p className="text-[11px] text-slate-500 leading-tight">{item.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 8 — REACH EVERY FARMER                                */}
-      {/* ============================================================ */}
-      <section id="section-channels" className="bg-white border-y border-slate-200 py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              Rural Accessibility Matrix
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Technology should adapt to farmers.
-            </h2>
-            <p className="text-xs text-slate-500 max-w-xl mx-auto">
-              Not every farmer has a 5G smartphone. AgriFlow communicates across all device types and literacy levels.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50 space-y-3">
-              <div className="h-10 w-10 rounded-2xl bg-gov-800 text-white flex items-center justify-center">
-                <Smartphone className="h-5 w-5" />
-              </div>
-              <h3 className="text-sm font-black text-slate-900">SMARTPHONE</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                App alerts, dynamic arrival guidance, token passes, and low-data mode for slow connections.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50 space-y-3">
-              <div className="h-10 w-10 rounded-2xl bg-amber-700 text-white flex items-center justify-center">
-                <MessageSquare className="h-5 w-5" />
-              </div>
-              <h3 className="text-sm font-black text-slate-900">BASIC PHONE</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Simple cellular SMS text updates and interactive USSD (*384#) menu that works on any 2G phone.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50 space-y-3">
-              <div className="h-10 w-10 rounded-2xl bg-blue-700 text-white flex items-center justify-center">
-                <Volume2 className="h-5 w-5" />
-              </div>
-              <h3 className="text-sm font-black text-slate-900">LOW LITERACY</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Local-language voice messages in Tamil, Hindi, and English with one-tap audio readouts.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50 space-y-3">
-              <div className="h-10 w-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center">
-                <PhoneCall className="h-5 w-5" />
-              </div>
-              <h3 className="text-sm font-black text-slate-900">NO INTERNET</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Interactive Voice Response (IVR), missed-call automated callbacks, and Common Service Centre (CSC) desk.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 9 — COMMUNICATION ESCALATION                          */}
-      {/* ============================================================ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              Guaranteed Delivery
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-              Sending a message is not the same as reaching a farmer.
-            </h2>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              If an SMS delivery fails or remains pending, the system automatically escalates to automated voice calls and places unreached farmers on the operator's callback list.
-            </p>
-
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center gap-2 text-slate-700 font-semibold">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                <span>Alert Created → SMS Gateway</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 font-semibold">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                <span>Delivery Status Monitored</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 font-semibold">
-                <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                <span>If needed → Outbound Voice Broadcast</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700 font-semibold">
-                <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                <span>If follow-up required → Operator Call Desk</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-gov space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                <span className="text-xs font-black text-slate-900">Communication Escalation Desk</span>
-                <span className="text-[10px] font-mono text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
-                  Simulated Telecom Stats
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold">Selected</span>
-                  <p className="text-xl font-black font-mono text-slate-900">18</p>
-                </div>
-                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <span className="text-[10px] text-emerald-800 uppercase font-bold">SMS Delivered</span>
-                  <p className="text-xl font-black font-mono text-emerald-950">12</p>
-                </div>
-                <div className="p-3 bg-blue-50 rounded-xl border border-blue-200">
-                  <span className="text-[10px] text-blue-800 uppercase font-bold">Voice Sent</span>
-                  <p className="text-xl font-black font-mono text-blue-950">4</p>
-                </div>
-                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
-                  <span className="text-[10px] text-amber-800 uppercase font-bold">Needs Follow-up</span>
-                  <p className="text-xl font-black font-mono text-amber-950">2</p>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-slate-400 text-center pt-1">
-                * Simulated delivery statistics for demonstration. Real integrations connect to state CDAC/NIC gateways.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 10 — HOW AGRIFLOW WORKS (HORIZONTAL CYCLE)            */}
-      {/* ============================================================ */}
-      <section className="bg-white border-y border-slate-200 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              Technical Architecture
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              End-to-End Operational Intelligence Cycle
-            </h2>
-            <p className="text-xs text-slate-500 max-w-xl mx-auto">
-              A closed-loop system connecting historical patterns, real-time gate telemetry, and farmer coordination.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2.5 text-center">
-            {[
-              { num: '1', title: 'Booking Data', desc: 'Ingests planned visits' },
-              { num: '2', title: 'Validate Data', desc: 'Checks gate telemetry' },
-              { num: '3', title: 'Predict Pressure', desc: 'Hourly inflow velocity' },
-              { num: '4', title: 'Explain Risk', desc: '3 deterministic factors' },
-              { num: '5', title: 'Simulate Shift', desc: 'Operator tests options' },
-              { num: '6', title: 'Operator Sign-off', desc: 'Human approval' },
-              { num: '7', title: 'Farmer Reach', desc: 'Multi-tier messaging' },
-              { num: '8', title: 'Arrival Feedback', desc: 'Feeds back to model' }
-            ].map((step, idx) => (
-              <div key={idx} className="p-3 rounded-2xl border border-slate-200 bg-slate-50 space-y-1">
-                <span className="h-6 w-6 rounded-full bg-gov-800 text-white font-mono font-bold text-[11px] inline-flex items-center justify-center">
-                  {step.num}
-                </span>
-                <h4 className="text-[11px] font-black text-slate-900 pt-1 leading-tight">{step.title}</h4>
-                <p className="text-[10px] text-slate-500 leading-tight">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center text-xs text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl max-w-lg mx-auto">
-            ⟲ Feedback Loop: Actual arrival counts feed back continuously to refine future hourly forecasts.
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 11 & 12 — PRODUCT INTERFACE PREVIEWS                   */}
-      {/* ============================================================ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-            User Interface Design
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-            Tailored Experiences for Operators and Farmers
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* SECTION 11: OPERATOR DASHBOARD PREVIEW */}
-          <div className="lg:col-span-7 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-gov space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <div>
-                <span className="text-xs font-bold text-slate-500 uppercase">Operator Dashboard</span>
-                <h3 className="text-sm font-black text-slate-900">Singanallur Centre Operations</h3>
-              </div>
-              <span className="text-xs font-mono bg-slate-100 px-2.5 py-1 rounded text-slate-700">
-                11:15 AM • Balwinder (Supervisor)
-              </span>
-            </div>
-
-            {/* Quick Status Cards */}
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-                <span className="text-[10px] text-slate-500">Queue:</span>
-                <p className="text-base font-black font-mono text-slate-900">18 Vehicles</p>
-              </div>
-              <div className="p-2.5 bg-rose-50 rounded-xl border border-rose-200">
-                <span className="text-[10px] text-rose-800">Expected:</span>
-                <p className="text-base font-black font-mono text-rose-950">38 Arrivals</p>
-              </div>
-              <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200">
-                <span className="text-[10px] text-emerald-800">Processed:</span>
-                <p className="text-base font-black font-mono text-emerald-950">42 Today</p>
-              </div>
-            </div>
-
-            {/* Timeline Strip */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-              <span className="font-bold text-slate-700 block mb-1.5">Arrival Pressure Timeline</span>
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span>9 AM: 🟢 Low</span>
-                <span>10 AM: 🟡 Moderate</span>
-                <span className="font-bold text-rose-700">11 AM: 🔴 High</span>
-                <span>2 PM: 🟢 Low</span>
-              </div>
-            </div>
-
-            <div className="pt-2 flex gap-2">
-              <button
-                onClick={onExplorePlatform}
-                className="flex-1 py-2 rounded-xl bg-gov-800 hover:bg-gov-900 text-white text-xs font-bold transition-colors text-center"
-              >
-                Launch Operator View →
-              </button>
-            </div>
-          </div>
-
-          {/* SECTION 12: FARMER MOBILE EXPERIENCE PREVIEW */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-sm rounded-[36px] border-4 border-slate-800 bg-white shadow-2xl p-4 space-y-3.5">
-              {/* Phone Speaker Notch */}
-              <div className="w-16 h-1 bg-slate-700 rounded-full mx-auto"></div>
-
-              {/* Mobile Screen Header */}
-              <div className="bg-gov-900 text-white p-3 rounded-2xl space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-black">வணக்கம் 👋</span>
-                  <span className="text-[10px] bg-emerald-700 px-1.5 py-0.2 rounded font-bold">2G Online</span>
-                </div>
-                <p className="text-xs text-gov-200 font-semibold">Singanallur Procurement Centre</p>
-              </div>
-
-              {/* Mobile Crowd Card */}
-              <div className="rounded-2xl border-2 border-amber-300 bg-amber-50 p-3.5 space-y-1.5 text-xs">
-                <div className="flex items-center justify-between font-black text-amber-950">
-                  <span>🟡 MODERATE CROWD</span>
-                  <button className="flex items-center gap-1 bg-amber-200 text-amber-950 px-2 py-0.5 rounded text-[10px] font-bold">
-                    <Volume2 className="h-3 w-3" />
-                    <span>Listen</span>
-                  </button>
-                </div>
-                <p className="text-slate-600 leading-snug">
-                  Waiting may take longer before noon.
-                </p>
-                <div className="pt-1.5 border-t border-amber-200 font-bold text-amber-950">
-                  🕒 BEST TIME TO VISIT: After 2 PM
-                </div>
-              </div>
-
-              {/* Mobile Booking Card */}
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs space-y-1">
-                <span className="text-[10px] font-bold text-slate-500 uppercase">My Booking</span>
-                <p className="font-mono font-black text-base text-slate-900">Token #1024</p>
-                <p className="text-slate-600 text-[11px]">Tomorrow • 02:00 PM • Gate 2</p>
-              </div>
-
-              {/* Strict 4-Tab Bottom Navigation Bar */}
-              <div className="pt-2 border-t border-slate-200 flex items-center justify-around text-[10px] font-bold text-slate-500">
-                <span className="text-gov-800 font-black">Home</span>
-                <span>Booking</span>
-                <span>Alerts</span>
-                <span>Help</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 13 — IMPACT (PROPOSED PILOT KPIS)                      */}
-      {/* ============================================================ */}
-      <section className="bg-white border-y border-slate-200 py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold text-gov-800 uppercase tracking-wider">
-              Pilot Evaluation Metrics
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Measure coordination, not promises.
-            </h2>
-            <p className="text-xs text-slate-500 max-w-xl mx-auto">
-              5 standardized impact categories designed for Mandi pilot evaluations.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {[
-              { label: 'EARLIER ALERTS', metric: '45–60 Mins', desc: 'Advance warning lead time provided to operators' },
-              { label: 'FASTER ACTION', metric: '< 4 Mins', desc: 'Average warning-to-intervention dispatch time' },
-              { label: 'ACCURACY', metric: 'Risk Tiers', desc: 'Peak detection compared against gate check-in logs' },
-              { label: 'FARMER REACH', metric: '94% Reach', desc: 'Cross-channel delivery across App, SMS, Voice & Desk' },
-              { label: 'QUEUE REDUCTION', metric: '-38 Mins', desc: 'Peak wait time slashed through balanced arrivals' }
-            ].map((kpi, idx) => (
-              <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2 text-center">
-                <span className="text-[10px] font-mono text-gov-800 bg-gov-100 px-2 py-0.5 rounded font-bold">
-                  Proposed Pilot KPI
-                </span>
-                <p className="text-xl font-black font-mono text-slate-900">{kpi.metric}</p>
-                <h4 className="text-xs font-black text-slate-800">{kpi.label}</h4>
-                <p className="text-[11px] text-slate-500 leading-tight">{kpi.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* SECTION 14 — FINAL CTA                                        */}
-      {/* ============================================================ */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-6">
-        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Better coordination starts before farmers arrive.
-        </h2>
-        <p className="text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-          AgriFlow helps agricultural procurement centres move from reactive queue management to proactive arrival coordination.
-        </p>
-
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <button
-            onClick={onExplorePlatform}
-            className="py-3.5 px-8 rounded-2xl bg-gov-800 hover:bg-gov-900 text-white font-black text-sm shadow-md transition-all flex items-center gap-2"
+          <div
+            className={`rounded-3xl border-2 p-6 sm:p-8 shadow-lg ${
+              isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
           >
-            <span>Explore AgriFlow</span>
-            <ArrowRight className="h-4 w-4" />
-          </button>
+            <CrowdShiftSimulator onApplyPlan={handleOperatorClick} />
+          </div>
+        </div>
+      </section>
 
-          <button
-            onClick={onExplorePlatform}
-            className="py-3.5 px-6 rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm shadow-xs transition-colors"
-          >
-            View Live Demo
-          </button>
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 8. TRUST SECTION: "BUILT AROUND THE FARMER" (Prompt Section 15) */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        id="section-trust"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24"
+      >
+        <div className="text-center max-w-2xl mx-auto space-y-2 mb-12">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-800">
+            Public Service Commitment
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            Built Around the Farmer
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            Five non-negotiable principles engineered for Indian rural realities.
+          </p>
         </div>
 
-        <p className="text-xs text-slate-400 font-mono pt-4">
-          Smart India Hackathon 2026 • Government-Ready Procurement Flow Intelligence
-        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Benefit 1: Farmer First */}
+          <div
+            className={`p-5 rounded-2xl border-2 space-y-3 ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-800 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 flex items-center justify-center text-xl">
+              🌾
+            </div>
+            <h4 className="text-sm font-black">Farmer First</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Zero AI jargon. Vernacular speech synthesis in Tamil, Hindi, Punjabi and English. 2G Low Data mode.
+            </p>
+          </div>
+
+          {/* Benefit 2: Smart Centre Selection */}
+          <div
+            className={`p-5 rounded-2xl border-2 space-y-3 ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-800 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="h-10 w-10 rounded-xl bg-gov-100 dark:bg-gov-950 text-gov-800 dark:text-emerald-300 flex items-center justify-center text-xl">
+              📍
+            </div>
+            <h4 className="text-sm font-black">Smart Centre Selection</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Dual-metric allocation in metric tonnes and road distance. Always provides plain-language reasons.
+            </p>
+          </div>
+
+          {/* Benefit 3: Virtual Queue */}
+          <div
+            className={`p-5 rounded-2xl border-2 space-y-3 ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-800 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="h-10 w-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 flex items-center justify-center text-xl">
+              🎟️
+            </div>
+            <h4 className="text-sm font-black">Virtual Queue</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Real-time token countdown (10 → 7 → 5 → 0). No waiting on hot tarmac. Booking remains 100% active.
+            </p>
+          </div>
+
+          {/* Benefit 4: Arrive When Your Turn Is Near */}
+          <div
+            className={`p-5 rounded-2xl border-2 space-y-3 ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-800 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 flex items-center justify-center text-xl">
+              ⏱️
+            </div>
+            <h4 className="text-sm font-black">Arrive When Near</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Dynamic departure advisories auto-adjust if earlier weighbridge delays occur (+15 min shift).
+            </p>
+          </div>
+
+          {/* Benefit 5: Secure & Role-Based */}
+          <div
+            className={`p-5 rounded-2xl border-2 space-y-3 ${
+              isDark
+                ? 'bg-slate-900/80 border-slate-800 text-white'
+                : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          >
+            <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 flex items-center justify-center text-xl">
+              🔐
+            </div>
+            <h4 className="text-sm font-black">Secure & Role-Based</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Strict centre isolation, tamper-evident SHA-256 audit trails, and certified PFMS DBT settlement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 9. FINAL CALL TO ACTION                                       */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section
+        className={`py-20 border-t ${
+          isDark
+            ? 'bg-gradient-to-b from-[#030712] to-[#081220] border-slate-800'
+            : 'bg-gradient-to-b from-white to-slate-100 border-slate-200'
+        }`}
+      >
+        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            Better Coordination Starts Before Farmers Arrive.
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+            Experience the complete platform directly. Explore the Farmer experience, manage the
+            Singanallur Hub, or simulate district surges as an administrator.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={handleFarmerClick}
+              className="py-3.5 px-8 rounded-2xl bg-gov-800 hover:bg-gov-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-black text-sm shadow-xl transition-all flex items-center gap-2"
+            >
+              <span>Launch Farmer App</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={handleOperatorClick}
+              className={`py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition-colors ${
+                isDark
+                  ? 'border-slate-700 bg-slate-800 text-white hover:bg-slate-700'
+                  : 'border-slate-300 bg-white text-slate-800 hover:bg-slate-50'
+              }`}
+            >
+              Centre Staff Console
+            </button>
+
+            <button
+              onClick={handleAdminClick}
+              className={`py-3.5 px-6 rounded-2xl border-2 font-bold text-sm transition-colors ${
+                isDark
+                  ? 'border-slate-700 bg-slate-800 text-white hover:bg-slate-700'
+                  : 'border-slate-300 bg-white text-slate-800 hover:bg-slate-50'
+              }`}
+            >
+              Admin Demand Surge Lab
+            </button>
+          </div>
+
+          <p className="text-xs text-slate-400 font-mono pt-6">
+            Smart India Hackathon 2026 • Grand Finale Operational Deployment Prototype
+          </p>
+        </div>
       </section>
     </div>
   );
