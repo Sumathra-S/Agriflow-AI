@@ -109,27 +109,27 @@ export const DistrictOverview: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 transition-colors">
       {/* 1. Government District Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gov-800 bg-gov-100 px-2.5 py-0.5 rounded-full border border-gov-200">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gov-800 dark:text-emerald-300 bg-gov-100 dark:bg-emerald-950 px-2.5 py-0.5 rounded-full border border-gov-200 dark:border-emerald-800">
               State Agricultural Marketing Board • District Command
             </span>
-            <span className="text-xs font-mono font-bold text-slate-500">Tamil Nadu / Coimbatore</span>
+            <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">Tamil Nadu / Coimbatore</span>
           </div>
-          <h2 className="text-xl font-black tracking-tight text-slate-900 mt-1">
+          <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white mt-1">
             District Procurement & Operations Control Centre
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Real-time multi-centre coordination, quantity capacity balancing, and PFMS financial settlement
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="bg-emerald-100 text-emerald-800 text-xs font-mono font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-600 animate-ping"></span>
+          <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-mono font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-300 dark:border-emerald-800">
+            <span className="h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-ping"></span>
             12 Mandis Online
           </span>
         </div>
@@ -144,7 +144,6 @@ export const DistrictOverview: React.FC = () => {
           icon={<Building2 className="h-6 w-6" />}
           variant="default"
         />
-
         <MetricCard
           label="Centres at High Risk"
           value={`${highRiskCount} Centres`}
@@ -152,7 +151,6 @@ export const DistrictOverview: React.FC = () => {
           icon={<AlertTriangle className="h-6 w-6" />}
           variant={highRiskCount > 0 ? 'danger' : 'success'}
         />
-
         <MetricCard
           label="Expected Arrivals"
           value={`${totalExpectedArrivals} Farmers`}
@@ -160,7 +158,6 @@ export const DistrictOverview: React.FC = () => {
           icon={<Clock className="h-6 w-6" />}
           variant="warning"
         />
-
         <MetricCard
           label="Total Intake Pressure"
           value={`${totalCurrentQueue} Waiting`}
@@ -171,7 +168,7 @@ export const DistrictOverview: React.FC = () => {
       </div>
 
       {/* 3. 12-Tab Administrative Navigation Bar */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-2 shadow-xs overflow-x-auto no-scrollbar">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2 shadow-xs overflow-x-auto no-scrollbar transition-colors">
         <div className="flex items-center gap-1 min-w-max">
           {tabsConfig.map(tab => (
             <button
@@ -179,8 +176,8 @@ export const DistrictOverview: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === tab.id
-                  ? 'bg-gov-800 text-white shadow-sm'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-gov-800 dark:bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {tab.icon}
@@ -191,8 +188,8 @@ export const DistrictOverview: React.FC = () => {
                     activeTab === tab.id
                       ? 'bg-white/20 text-white'
                       : tab.badge === 'KILLER FEATURE'
-                      ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                      : 'bg-slate-100 text-slate-600'
+                      ? 'bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                   }`}
                 >
                   {tab.badge}

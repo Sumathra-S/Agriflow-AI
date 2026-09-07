@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSimulation } from '../../context/SimulationContext';
+import { useAuth } from '../../context/AuthContext';
 import { FarmerHeader } from './FarmerHeader';
 import { CongestionCard } from './CongestionCard';
 import { BookingCard } from './BookingCard';
@@ -44,6 +45,7 @@ import {
 export const FarmerMobileView: React.FC = () => {
   const { t } = useLanguage();
   const { congestionRisk } = useSimulation();
+  const { logout } = useAuth();
 
   // Strict 9-Tab Farmer Experience (Prompt Section 2 & 66)
   const [activeTab, setActiveTab] = useState<FarmerNavigationTab>('home');
@@ -106,8 +108,10 @@ export const FarmerMobileView: React.FC = () => {
   ];
 
   return (
-    <div className={`flex flex-col min-h-[720px] max-w-md mx-auto shadow-md border-x border-slate-200 transition-colors ${
-      isLowDataMode ? 'bg-white text-black' : 'bg-slate-100 text-slate-900'
+    <div className={`flex flex-col min-h-[720px] max-w-md mx-auto shadow-md border-x border-slate-200 dark:border-slate-800 transition-colors ${
+      isLowDataMode
+        ? 'bg-white text-black'
+        : 'bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100'
     }`}>
       {/* 1. Mobile Top Header with Greeting, Languages, IVR, USSD & Low Data Mode */}
       <FarmerHeader
@@ -121,6 +125,7 @@ export const FarmerMobileView: React.FC = () => {
         onOpenUssd={() => setIsUssdModalOpen(true)}
         onOpenRegister={() => setIsRegisterModalOpen(true)}
         onOpenPreferences={() => setIsPreferencesOpen(true)}
+        onLogout={logout}
       />
 
       {/* 2. Assisted Access / Common Service Centre (CSC) Bar */}
@@ -395,17 +400,17 @@ export const FarmerMobileView: React.FC = () => {
       />
 
       {/* 8. Fixed Bottom Navigation Bar (Fast 5-Button Dock) */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-300 px-2 py-2 flex items-center justify-around z-20 shadow-xl">
+      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-slate-900 border-t border-slate-300 dark:border-slate-800 px-2 py-2 flex items-center justify-around z-20 shadow-xl">
         {/* Tab 1: Home */}
         <button
           onClick={() => setActiveTab('home')}
           className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl min-w-[62px] transition-all ${
             activeTab === 'home'
-              ? 'text-gov-900 font-extrabold bg-gov-50'
-              : 'text-slate-600 hover:text-slate-950'
+              ? 'text-gov-900 dark:text-emerald-300 font-extrabold bg-gov-50 dark:bg-emerald-950/60'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
           }`}
         >
-          <Home className={`h-5 w-5 ${activeTab === 'home' ? 'stroke-[2.5px] text-gov-800' : ''}`} />
+          <Home className={`h-5 w-5 ${activeTab === 'home' ? 'stroke-[2.5px] text-gov-800 dark:text-emerald-400' : ''}`} />
           <span className="text-[11px] mt-0.5">Home</span>
         </button>
 
@@ -414,11 +419,11 @@ export const FarmerMobileView: React.FC = () => {
           onClick={() => setActiveTab('book')}
           className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl min-w-[62px] transition-all ${
             activeTab === 'book'
-              ? 'text-gov-900 font-extrabold bg-gov-50'
-              : 'text-slate-600 hover:text-slate-950'
+              ? 'text-gov-900 dark:text-emerald-300 font-extrabold bg-gov-50 dark:bg-emerald-950/60'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
           }`}
         >
-          <CalendarPlus className={`h-5 w-5 ${activeTab === 'book' ? 'stroke-[2.5px] text-gov-800' : ''}`} />
+          <CalendarPlus className={`h-5 w-5 ${activeTab === 'book' ? 'stroke-[2.5px] text-gov-800 dark:text-emerald-400' : ''}`} />
           <span className="text-[11px] mt-0.5">Book</span>
         </button>
 
@@ -427,11 +432,11 @@ export const FarmerMobileView: React.FC = () => {
           onClick={() => setActiveTab('queue')}
           className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl min-w-[62px] transition-all ${
             activeTab === 'queue'
-              ? 'text-gov-900 font-extrabold bg-gov-50'
-              : 'text-slate-600 hover:text-slate-950'
+              ? 'text-gov-900 dark:text-emerald-300 font-extrabold bg-gov-50 dark:bg-emerald-950/60'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
           }`}
         >
-          <Ticket className={`h-5 w-5 ${activeTab === 'queue' ? 'stroke-[2.5px] text-gov-800' : ''}`} />
+          <Ticket className={`h-5 w-5 ${activeTab === 'queue' ? 'stroke-[2.5px] text-gov-800 dark:text-emerald-400' : ''}`} />
           <span className="text-[11px] mt-0.5">Queue</span>
         </button>
 
@@ -440,11 +445,11 @@ export const FarmerMobileView: React.FC = () => {
           onClick={() => setActiveTab('payment')}
           className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl min-w-[62px] transition-all ${
             activeTab === 'payment'
-              ? 'text-gov-900 font-extrabold bg-gov-50'
-              : 'text-slate-600 hover:text-slate-950'
+              ? 'text-gov-900 dark:text-emerald-300 font-extrabold bg-gov-50 dark:bg-emerald-950/60'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
           }`}
         >
-          <CreditCard className={`h-5 w-5 ${activeTab === 'payment' ? 'stroke-[2.5px] text-gov-800' : ''}`} />
+          <CreditCard className={`h-5 w-5 ${activeTab === 'payment' ? 'stroke-[2.5px] text-gov-800 dark:text-emerald-400' : ''}`} />
           <span className="text-[11px] mt-0.5">Payout</span>
         </button>
 
@@ -453,11 +458,11 @@ export const FarmerMobileView: React.FC = () => {
           onClick={() => setActiveTab('help')}
           className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl min-w-[62px] transition-all ${
             activeTab === 'help'
-              ? 'text-gov-900 font-extrabold bg-gov-50'
-              : 'text-slate-600 hover:text-slate-950'
+              ? 'text-gov-900 dark:text-emerald-300 font-extrabold bg-gov-50 dark:bg-emerald-950/60'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
           }`}
         >
-          <HelpCircle className={`h-5 w-5 ${activeTab === 'help' ? 'stroke-[2.5px] text-gov-800' : ''}`} />
+          <HelpCircle className={`h-5 w-5 ${activeTab === 'help' ? 'stroke-[2.5px] text-gov-800 dark:text-emerald-400' : ''}`} />
           <span className="text-[11px] mt-0.5">Help</span>
         </button>
       </nav>

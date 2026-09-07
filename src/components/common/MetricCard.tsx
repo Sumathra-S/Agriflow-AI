@@ -21,34 +21,34 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   trend
 }) => {
   const variantStyles = {
-    default: 'border-slate-200 bg-white text-slate-900',
-    danger: 'border-rose-300 bg-rose-50/50 text-slate-900',
-    warning: 'border-amber-300 bg-amber-50/50 text-slate-900',
-    success: 'border-emerald-300 bg-emerald-50/50 text-slate-900'
+    default: 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white',
+    danger: 'border-rose-300 dark:border-rose-800 bg-rose-50/50 dark:bg-rose-950/40 text-slate-900 dark:text-white',
+    warning: 'border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/40 text-slate-900 dark:text-white',
+    success: 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/40 text-slate-900 dark:text-white'
   };
 
   const iconBgStyles = {
-    default: 'bg-slate-100 text-slate-700',
-    danger: 'bg-rose-100 text-rose-700',
-    warning: 'bg-amber-100 text-amber-800',
-    success: 'bg-emerald-100 text-emerald-800'
+    default: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
+    danger: 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300',
+    warning: 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300',
+    success: 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300'
   };
 
   return (
-    <div className={`rounded-lg border p-5 shadow-gov transition-all ${variantStyles[variant]}`}>
+    <div className={`rounded-xl border p-5 shadow-gov transition-all ${variantStyles[variant]}`}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</p>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-bold tracking-tight text-slate-900">{value}</span>
+            <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">{value}</span>
             {trend && (
               <span
                 className={`inline-flex items-center text-xs font-medium ${
                   trend.direction === 'up'
-                    ? 'text-rose-700'
+                    ? 'text-rose-700 dark:text-rose-400'
                     : trend.direction === 'down'
-                    ? 'text-emerald-700'
-                    : 'text-slate-500'
+                    ? 'text-emerald-700 dark:text-emerald-400'
+                    : 'text-slate-500 dark:text-slate-400'
                 }`}
               >
                 {trend.direction === 'up' && '↑ '}
@@ -57,9 +57,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-slate-500">{subtext}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{subtext}</p>
         </div>
-        <div className={`rounded-md p-2.5 ${iconBgStyles[variant]}`}>
+        <div className={`rounded-lg p-2.5 ${iconBgStyles[variant]}`}>
           {icon}
         </div>
       </div>

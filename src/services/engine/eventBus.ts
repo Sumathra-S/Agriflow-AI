@@ -16,7 +16,9 @@ export type AgriFlowEventType =
   | 'NOTIFICATION_DISPATCHED'
   | 'AUDIT_LOGGED'
   | 'REALLOCATION_OFFERED'
-  | 'ACTION_EXECUTED';
+  | 'ACTION_EXECUTED'
+  | 'AUTH_LOGIN'
+  | 'AUTH_LOGOUT';
 
 export interface AgriFlowEvent<T = any> {
   id?: string;

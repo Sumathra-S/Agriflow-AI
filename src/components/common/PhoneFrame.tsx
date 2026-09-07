@@ -8,16 +8,16 @@ interface PhoneFrameProps {
 
 export const PhoneFrame: React.FC<PhoneFrameProps> = ({ children, onExitFrame }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-900/10 min-h-[calc(100vh-140px)]">
-      <div className="mb-3 flex items-center justify-between w-full max-w-[400px] text-xs text-slate-600 font-medium">
+    <div className="flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-900/5 dark:bg-slate-950/60 min-h-[calc(100vh-140px)] transition-colors">
+      <div className="mb-3 flex items-center justify-between w-full max-w-[400px] text-xs text-slate-600 dark:text-slate-400 font-medium">
         <span className="flex items-center gap-1">
-          <Smartphone className="h-4 w-4 text-gov-700" />
+          <Smartphone className="h-4 w-4 text-gov-700 dark:text-emerald-400" />
           Farmer Smartphone Viewport (390 × 844 px)
         </span>
         {onExitFrame && (
           <button
             onClick={onExitFrame}
-            className="flex items-center gap-1 hover:text-gov-800 text-slate-700 underline"
+            className="flex items-center gap-1 hover:text-gov-800 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 underline"
           >
             <Maximize2 className="h-3 w-3" />
             Full Width View
@@ -34,7 +34,7 @@ export const PhoneFrame: React.FC<PhoneFrameProps> = ({ children, onExitFrame })
         </div>
 
         {/* Screen container */}
-        <div className="w-full bg-slate-50 rounded-[32px] overflow-hidden shadow-inner max-h-[760px] overflow-y-auto">
+        <div className="w-full bg-slate-50 dark:bg-slate-900 rounded-[32px] overflow-hidden shadow-inner max-h-[760px] overflow-y-auto">
           {children}
         </div>
 

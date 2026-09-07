@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSimulation } from '../../context/SimulationContext';
+import { useAuth } from '../../context/AuthContext';
 import { MetricCard } from '../common/MetricCard';
 import { StatusBadge } from '../common/StatusBadge';
 import { MainAlertBanner } from './MainAlertBanner';
@@ -81,6 +82,8 @@ export const OperatorDashboard: React.FC = () => {
     backupStaffActive
   } = useSimulation();
 
+  const { triggerUnauthorizedAlert } = useAuth();
+
   const [activeTab, setActiveTab] = useState<OperatorTab>('dashboard');
 
   // Operator Training Checklist State (Section 48)
@@ -119,12 +122,12 @@ export const OperatorDashboard: React.FC = () => {
     <div className="flex flex-col lg:flex-row gap-6 pb-12">
       {/* 1. LEFT SIDEBAR NAVIGATION (Section 49 & 10 Dedicated Operator Tabs) */}
       <aside className="w-full lg:w-64 flex-shrink-0">
-        <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-gov sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
-          <div className="px-3 py-2 border-b border-slate-100 mb-2">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-gov sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto transition-colors">
+          <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Operations Control
             </span>
-            <h3 className="text-xs font-black text-slate-900 mt-0.5">Singanallur Hub (Centre C)</h3>
+            <h3 className="text-xs font-black text-slate-900 dark:text-white mt-0.5">Singanallur Hub (Centre C)</h3>
           </div>
 
           {/* SECTION: 10 CORE OPERATOR TABS */}
@@ -134,23 +137,23 @@ export const OperatorDashboard: React.FC = () => {
           <nav className="space-y-1 text-xs font-semibold mb-3">
             {[
               { id: 'dashboard', label: 'Centre Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
-              { id: 'queue', label: 'Live Queue', icon: <Users className="h-4 w-4 text-gov-800" />, badge: `${currentQueue}` },
-              { id: 'arrivals', label: 'Arrivals Desk', icon: <Truck className="h-4 w-4 text-slate-700" />, badge: 'Gates' },
-              { id: 'tokens', label: 'Token Management', icon: <UserPlus className="h-4 w-4 text-amber-700" /> },
-              { id: 'weighing', label: 'Weighing Console', icon: <Scale className="h-4 w-4 text-blue-700" />, badge: '60t' },
-              { id: 'quality', label: 'Quality Check', icon: <CheckSquare className="h-4 w-4 text-purple-700" />, badge: 'Moisture' },
-              { id: 'procurement', label: 'Procurement & MSP', icon: <CheckCircle2 className="h-4 w-4 text-emerald-700" /> },
-              { id: 'counters', label: 'Counters & Bays', icon: <Building2 className="h-4 w-4 text-slate-700" /> },
-              { id: 'capacity', label: 'Capacity & Demand', icon: <Activity className="h-4 w-4 text-gov-800" />, badge: '100t' },
-              { id: 'alerts', label: 'Operational Alerts', icon: <ShieldAlert className="h-4 w-4 text-rose-700" />, badge: congestionRisk === 'HIGH' ? 'SURGE' : undefined },
+              { id: 'queue', label: 'Live Queue', icon: <Users className="h-4 w-4 text-gov-800 dark:text-emerald-400" />, badge: `${currentQueue}` },
+              { id: 'arrivals', label: 'Arrivals Desk', icon: <Truck className="h-4 w-4 text-slate-700 dark:text-slate-300" />, badge: 'Gates' },
+              { id: 'tokens', label: 'Token Management', icon: <UserPlus className="h-4 w-4 text-amber-700 dark:text-amber-400" /> },
+              { id: 'weighing', label: 'Weighing Console', icon: <Scale className="h-4 w-4 text-blue-700 dark:text-blue-400" />, badge: '60t' },
+              { id: 'quality', label: 'Quality Check', icon: <CheckSquare className="h-4 w-4 text-purple-700 dark:text-purple-400" />, badge: 'Moisture' },
+              { id: 'procurement', label: 'Procurement & MSP', icon: <CheckCircle2 className="h-4 w-4 text-emerald-700 dark:text-emerald-400" /> },
+              { id: 'counters', label: 'Counters & Bays', icon: <Building2 className="h-4 w-4 text-slate-700 dark:text-slate-300" /> },
+              { id: 'capacity', label: 'Capacity & Demand', icon: <Activity className="h-4 w-4 text-gov-800 dark:text-emerald-400" />, badge: '100t' },
+              { id: 'alerts', label: 'Operational Alerts', icon: <ShieldAlert className="h-4 w-4 text-rose-700 dark:text-rose-400" />, badge: congestionRisk === 'HIGH' ? 'SURGE' : undefined },
             ].map(item => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as OperatorTab)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
                   activeTab === item.id
-                    ? 'bg-gov-800 text-white font-bold shadow-xs'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-gov-800 dark:bg-emerald-700 text-white font-bold shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -158,7 +161,7 @@ export const OperatorDashboard: React.FC = () => {
                   <span>{item.label}</span>
                 </div>
                 {item.badge && activeTab !== item.id && (
-                  <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-bold font-mono">
+                  <span className="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.2 rounded font-bold font-mono">
                     {item.badge}
                   </span>
                 )}
@@ -167,26 +170,26 @@ export const OperatorDashboard: React.FC = () => {
           </nav>
 
           {/* SECTION: DECISION & PLANNING TOOLS */}
-          <div className="text-[10px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider border-t border-slate-100 pt-2">
+          <div className="text-[10px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider border-t border-slate-100 dark:border-slate-800 pt-2">
             Decision Tools
           </div>
-          <nav className="space-y-1 text-xs font-semibold">
+          <nav className="space-y-1 text-xs font-semibold mb-3">
             {[
-              { id: 'command-centre', label: 'Regional Control', icon: <Building2 className="h-4 w-4 text-gov-700" />, badge: 'Cluster' },
-              { id: 'what-if', label: 'What-If Control Room', icon: <Zap className="h-4 w-4 text-amber-600" />, badge: 'AI Levers' },
-              { id: 'simulator', label: 'Crowd Shift Simulator', icon: <Sliders className="h-4 w-4 text-emerald-700" />, badge: 'Simulate' },
-              { id: 'communication', label: 'Communication Hub', icon: <MessageSquare className="h-4 w-4 text-gov-700" />, badge: 'Broadcast' },
-              { id: 'training', label: 'Training & SOP', icon: <GraduationCap className="h-4 w-4 text-emerald-700" />, badge: 'Pilot' },
-              { id: 'audit-trail', label: 'Tamper Audit Trail', icon: <ShieldCheck className="h-4 w-4 text-emerald-700" /> },
-              { id: 'model-governance', label: 'Model Governance', icon: <Brain className="h-4 w-4 text-purple-700" /> },
+              { id: 'command-centre', label: 'Regional Control', icon: <Building2 className="h-4 w-4 text-gov-700 dark:text-emerald-400" />, badge: 'Cluster' },
+              { id: 'what-if', label: 'What-If Control Room', icon: <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400" />, badge: 'AI Levers' },
+              { id: 'simulator', label: 'Crowd Shift Simulator', icon: <Sliders className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />, badge: 'Simulate' },
+              { id: 'communication', label: 'Communication Hub', icon: <MessageSquare className="h-4 w-4 text-gov-700 dark:text-emerald-400" />, badge: 'Broadcast' },
+              { id: 'training', label: 'Training & SOP', icon: <GraduationCap className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />, badge: 'Pilot' },
+              { id: 'audit-trail', label: 'Tamper Audit Trail', icon: <ShieldCheck className="h-4 w-4 text-emerald-700 dark:text-emerald-400" /> },
+              { id: 'model-governance', label: 'Model Governance', icon: <Brain className="h-4 w-4 text-purple-700 dark:text-purple-400" /> },
             ].map(item => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as OperatorTab)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
                   activeTab === item.id
-                    ? 'bg-gov-800 text-white font-bold shadow-xs'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-gov-800 dark:bg-emerald-700 text-white font-bold shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -194,13 +197,36 @@ export const OperatorDashboard: React.FC = () => {
                   <span>{item.label}</span>
                 </div>
                 {item.badge && activeTab !== item.id && (
-                  <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-bold">
+                  <span className="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.2 rounded font-bold">
                     {item.badge}
                   </span>
                 )}
               </button>
             ))}
           </nav>
+
+          {/* SECTION: STRICT RBAC BOUNDARY TESTING */}
+          <div className="text-[10px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider border-t border-slate-100 dark:border-slate-800 pt-2">
+            Security Isolation Test
+          </div>
+          <div className="p-2 space-y-1.5 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px]">
+            <button
+              onClick={() => triggerUnauthorizedAlert("You don't have permission to access this area. Operator is locked strictly to Singanallur Centre C.")}
+              className="w-full text-left py-1.5 px-2 rounded-lg text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-semibold transition-colors flex items-center justify-between"
+              title="Test RBAC Centre Isolation: Operator accessing Centre B"
+            >
+              <span>🚨 Access Sulur Hub</span>
+              <span className="text-[9px] bg-rose-100 dark:bg-rose-900/60 text-rose-800 dark:text-rose-300 px-1 rounded font-bold">403</span>
+            </button>
+            <button
+              onClick={() => triggerUnauthorizedAlert("You don't have permission to access this area. District Administrator credentials required.")}
+              className="w-full text-left py-1.5 px-2 rounded-lg text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 font-semibold transition-colors flex items-center justify-between"
+              title="Test RBAC Role Privilege: Operator accessing Admin Portal"
+            >
+              <span>🛡️ Access Admin API</span>
+              <span className="text-[9px] bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 px-1 rounded font-bold">403</span>
+            </button>
+          </div>
         </div>
       </aside>
 

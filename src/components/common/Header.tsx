@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useSimulation } from '../../context/SimulationContext';
 import { UserRole } from '../../types/procurement';
 import {
@@ -11,7 +12,11 @@ import {
   Tractor,
   BarChart3,
   PhoneCall,
-  Hash
+  Hash,
+  Sun,
+  Moon,
+  LogOut,
+  ShieldAlert
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -21,6 +26,7 @@ interface HeaderProps {
   onOpenUssd?: () => void;
   onNavigateLanding?: () => void;
   onOpenBasicPhone?: () => void;
+  onNavigateRoleSelect?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -29,12 +35,14 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenIvr,
   onOpenUssd,
   onNavigateLanding,
-  onOpenBasicPhone
+  onOpenBasicPhone,
+  onNavigateRoleSelect
 }) => {
-  const { role, setRole, user } = useAuth();
+  const { role, setRole, user, logout, unauthorizedAlert, clearUnauthorizedAlert } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const { congestionRisk } = useSimulation();
   const [currentTime, setCurrentTime] = useState<string>('11:15 AM');
-  const [currentDate, setCurrentDate] = useState<string>('06 Sep 2026');
+  const [currentDate, setCurrentDate] = useState<string>('07 Sep 2026');
   const [roleMenuOpen, setRoleMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -60,130 +68,151 @@ export const Header: React.FC<HeaderProps> = ({
     {
       role: 'OPERATOR',
       label: 'Centre Operator',
-      icon: <Building2 className="h-4 w-4 text-emerald-700" />,
-      desc: 'Mandi Kalan Centre Control & Communication'
+      icon: <Building2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />,
+      desc: 'Singanallur Centre Operations'
     },
     {
       role: 'FARMER',
       label: 'Farmer Experience',
-      icon: <Tractor className="h-4 w-4 text-amber-700" />,
+      icon: <Tractor className="h-4 w-4 text-amber-600 dark:text-amber-400" />,
       desc: 'Mobile flow guidance & booking'
     },
     {
       role: 'ADMIN',
       label: 'District Administrator',
-      icon: <BarChart3 className="h-4 w-4 text-blue-700" />,
+      icon: <BarChart3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />,
       desc: 'District Multi-Centre Overview'
     }
   ];
 
   return (
-    <header className="border-b border-slate-200 bg-white sticky top-0 z-30 shadow-xs">
+    <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-30 shadow-xs transition-colors duration-200">
       {/* Official Government Top Bar */}
-      <div className="bg-gov-900 text-gov-100 text-xs px-4 py-1 flex items-center justify-between border-b border-gov-800">
+      <div className="bg-gov-900 dark:bg-slate-950 text-gov-100 dark:text-slate-300 text-xs px-4 py-1 flex items-center justify-between border-b border-gov-800 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
           <span className="font-semibold tracking-wide text-white">Government of India / State Agricultural Marketing Board</span>
-          <span className="text-gov-200 hidden sm:inline">• Food, Civil Supplies & Consumer Affairs</span>
+          <span className="text-gov-200 dark:text-slate-400 hidden sm:inline">• Food, Civil Supplies & Consumer Affairs</span>
         </div>
-        <div className="flex items-center gap-3 text-gov-200 font-mono text-[11px]">
+        <div className="flex items-center gap-3 text-gov-200 dark:text-slate-400 font-mono text-[11px]">
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3 text-emerald-300" />
             <span>Shift: 08:00–19:00</span>
           </span>
-          <span className="text-gov-700">|</span>
+          <span className="text-gov-700 dark:text-slate-700">|</span>
           <span>Portal Ref: AGRIFLOW-v2.0</span>
         </div>
       </div>
 
+      {/* Unauthorized Access Security Banner */}
+      {unauthorizedAlert && (
+        <div className="bg-rose-600 dark:bg-rose-900 text-white px-4 py-2 text-xs font-bold flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-2 max-w-7xl mx-auto w-full">
+            <ShieldAlert className="h-4 w-4 flex-shrink-0 text-white" />
+            <span>{unauthorizedAlert}</span>
+            <button
+              onClick={clearUnauthorizedAlert}
+              className="ml-auto underline text-[11px] font-bold text-white hover:text-rose-100"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main Header Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         {/* Product Brand & Centre Info */}
         <div className="flex items-center gap-3.5">
-          <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gov-800 text-white shadow-sm border border-gov-700">
+          <div className="flex items-center justify-center h-11 w-11 rounded-xl bg-gov-800 dark:bg-emerald-700 text-white shadow-sm border border-gov-700 dark:border-emerald-600">
             <span className="text-2xl">🌾</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-slate-900">AgriFlow</h1>
-              <span className="bg-gov-100 text-gov-800 text-[10px] font-extrabold px-2 py-0.5 rounded border border-gov-200 uppercase tracking-wider">
+              <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">AgriFlow</h1>
+              <span className="bg-gov-100 dark:bg-emerald-950 text-gov-800 dark:text-emerald-300 text-[10px] font-extrabold px-2 py-0.5 rounded border border-gov-200 dark:border-emerald-800 uppercase tracking-wider">
                 Public Service
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1 mt-0.5">
               <span>Know the crowd before it arrives.</span>
-              <span className="text-slate-300">•</span>
-              <span className="flex items-center text-slate-600 font-medium">
-                <MapPin className="h-3 w-3 text-gov-700 mr-0.5" />
-                Singanallur Procurement Centre
+              <span className="text-slate-300 dark:text-slate-600">•</span>
+              <span className="flex items-center text-slate-600 dark:text-slate-300 font-medium">
+                <MapPin className="h-3 w-3 text-gov-700 dark:text-emerald-400 mr-0.5" />
+                {user.centreName || 'Singanallur Procurement Centre'}
               </span>
             </p>
           </div>
         </div>
 
-        {/* Right Section: IVR button, Time, Notifications & Role Switcher */}
-        <div className="flex items-center gap-2.5 self-end md:self-auto">
+        {/* Right Section: Theme Toggle, Basic Phone, Notifications, Role, Logout */}
+        <div className="flex flex-wrap items-center gap-2 self-end md:self-auto">
+          {/* Explicit Light / Dark Mode Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-xs transition-colors"
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="h-4 w-4 text-amber-400" />
+                <span>☀️ Light Mode</span>
+              </>
+            ) : (
+              <>
+                <Moon className="h-4 w-4 text-indigo-600" />
+                <span>🌙 Dark Mode</span>
+              </>
+            )}
+          </button>
+
           {/* Landing Page Switcher */}
           {onNavigateLanding && (
             <button
               onClick={onNavigateLanding}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-slate-400 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-xs transition-colors"
               title="Return to Public Service Presentation Landing Page"
             >
-              <span>← Landing Page</span>
+              <span>← Landing</span>
             </button>
           )}
 
-          {/* Unified Basic Phone Simulator Button */}
-          {onOpenBasicPhone ? (
+          {/* Role Selection Switcher */}
+          {onNavigateRoleSelect && (
+            <button
+              onClick={onNavigateRoleSelect}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-slate-400 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-xs transition-colors"
+              title="Switch Access Portal"
+            >
+              <span>Switch Portal</span>
+            </button>
+          )}
+
+          {/* Basic Phone Simulator Button */}
+          {onOpenBasicPhone && (
             <button
               onClick={onOpenBasicPhone}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition-colors"
               title="Launch Basic Phone Access Simulator (SMS / IVR / USSD)"
             >
               <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
-              <span>📞 Basic Phone (SMS/IVR/USSD)</span>
+              <span className="hidden sm:inline">📞 Basic Phone</span>
             </button>
-          ) : (
-            <>
-              {/* USSD Simulator Button */}
-              {onOpenUssd && (
-                <button
-                  onClick={onOpenUssd}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-900 hover:bg-emerald-950 text-white text-xs font-mono font-bold shadow-xs transition-colors border border-emerald-700"
-                  title="Launch Feature Phone *384# USSD Simulator"
-                >
-                  <Hash className="h-3.5 w-3.5 text-emerald-300" />
-                  <span>*384# USSD</span>
-                </button>
-              )}
-
-              {/* IVR Phone Simulation Trigger Button */}
-              {onOpenIvr && (
-                <button
-                  onClick={onOpenIvr}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition-colors"
-                  title="Launch Interactive Basic Phone IVR Simulator"
-                >
-                  <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
-                  <span>📞 IVR / Phone</span>
-                </button>
-              )}
-            </>
           )}
 
           {/* Live Date / Time Badge */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-100 border border-slate-200 text-xs text-slate-700 font-medium">
-            <Clock className="h-3.5 w-3.5 text-slate-500" />
+          <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 font-medium">
+            <Clock className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
             <span>{currentDate}</span>
-            <span className="text-slate-300">•</span>
-            <span className="font-semibold text-slate-900">{currentTime}</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <span className="font-semibold text-slate-900 dark:text-white">{currentTime}</span>
           </div>
 
           {/* Operational Notification Bell */}
           <button
             onClick={onToggleNotifications}
-            className="relative p-2 rounded-md border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors"
+            className="relative p-2 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
             title="Operational Notifications"
           >
             <Bell className="h-4 w-4" />
@@ -194,27 +223,27 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          {/* Role Switcher Dropdown */}
+          {/* Role Badge / Switcher */}
           <div className="relative">
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold shadow-xs transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold shadow-xs transition-colors"
             >
               <div className="flex items-center gap-1.5">
-                {role === 'OPERATOR' && <Building2 className="h-3.5 w-3.5 text-gov-700" />}
-                {role === 'FARMER' && <Tractor className="h-3.5 w-3.5 text-amber-700" />}
-                {role === 'ADMIN' && <BarChart3 className="h-3.5 w-3.5 text-blue-700" />}
-                <span className="capitalize">{role.toLowerCase()} View</span>
+                {role === 'OPERATOR' && <Building2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />}
+                {role === 'FARMER' && <Tractor className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />}
+                {role === 'ADMIN' && <BarChart3 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />}
+                <span className="capitalize">{role.toLowerCase()}</span>
               </div>
               <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
             </button>
 
             {roleMenuOpen && (
-              <div className="absolute right-0 mt-1.5 w-72 rounded-lg border border-slate-200 bg-white py-1 shadow-lg z-50">
-                <div className="px-3 py-2 border-b border-slate-100 bg-slate-50">
-                  <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Switch System Role</p>
-                  <p className="text-xs font-medium text-slate-900 mt-0.5">{user.name}</p>
-                  <p className="text-[11px] text-slate-500">{user.badge}</p>
+              <div className="absolute right-0 mt-1.5 w-72 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-1 shadow-lg z-50">
+                <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-850">
+                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Logged In Personnel</p>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">{user.name}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">{user.badge}</p>
                 </div>
                 <div className="py-1">
                   {rolesList.map(item => (
@@ -225,7 +254,9 @@ export const Header: React.FC<HeaderProps> = ({
                         setRoleMenuOpen(false);
                       }}
                       className={`w-full flex items-start gap-2.5 px-3 py-2 text-left text-xs transition-colors ${
-                        role === item.role ? 'bg-gov-50 text-gov-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'
+                        role === item.role
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 font-semibold'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
                       }`}
                     >
                       <div className="mt-0.5">{item.icon}</div>
@@ -233,10 +264,10 @@ export const Header: React.FC<HeaderProps> = ({
                         <div className="flex items-center gap-1.5">
                           <span>{item.label}</span>
                           {role === item.role && (
-                            <span className="text-[10px] bg-gov-200 text-gov-800 px-1 rounded font-bold">Active</span>
+                            <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 px-1 rounded font-bold">Active</span>
                           )}
                         </div>
-                        <p className="text-[11px] text-slate-500 font-normal">{item.desc}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal">{item.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -244,6 +275,16 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
           </div>
+
+          {/* Prominent High-Visibility Logout Button */}
+          <button
+            onClick={logout}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-bold shadow-xs transition-colors"
+            title="Sign out of current account securely"
+          >
+            <LogOut className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>

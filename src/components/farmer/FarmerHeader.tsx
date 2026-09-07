@@ -12,7 +12,8 @@ import {
   Hash,
   UserPlus,
   Zap,
-  Sliders
+  Sliders,
+  LogOut
 } from 'lucide-react';
 
 interface FarmerHeaderProps {
@@ -26,6 +27,7 @@ interface FarmerHeaderProps {
   onOpenUssd?: () => void;
   onOpenRegister?: () => void;
   onOpenPreferences?: () => void;
+  onLogout?: () => void;
 }
 
 export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
@@ -38,7 +40,8 @@ export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
   onOpenIvr,
   onOpenUssd,
   onOpenRegister,
-  onOpenPreferences
+  onOpenPreferences,
+  onLogout
 }) => {
   const { t, language, setLanguage } = useLanguage();
 
@@ -111,6 +114,17 @@ export const FarmerHeader: React.FC<FarmerHeaderProps> = ({
             >
               <PhoneCall className="h-3 w-3 text-emerald-200" />
               <span>IVR</span>
+            </button>
+          )}
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1 bg-rose-800 hover:bg-rose-700 text-rose-100 px-2 py-1 rounded-lg text-[11px] font-bold shadow-xs transition-colors border border-rose-600"
+              title="Sign out of Farmer portal"
+            >
+              <LogOut className="h-3 w-3" />
+              <span>Logout</span>
             </button>
           )}
         </div>
