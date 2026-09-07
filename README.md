@@ -1,178 +1,158 @@
-# AgriFlow — Master Build V2
+# AgriFlow AI — Smart India Hackathon 2026 (Grand Finale)
 
-> **Predict. Coordinate. Reach Every Farmer.**
-> *A procurement flow intelligence and multi-channel communication platform that helps centres act before congestion grows and ensures farmers can access guidance through smartphones, basic phones, voice or human assistance.*
-
-Built for the **Smart India Hackathon (SIH)**.
-
----
-
-## 🌾 1. Product Definition & Core Innovation
-
-> **"Existing procurement systems digitise transactions. AgriFlow adds procurement flow intelligence and multi-channel farmer access."**
-
-Existing systems already manage farmer registration and slot booking. AgriFlow complements them by solving the operational coordination problem:
-**How can procurement centres anticipate arrival pressure and communicate understandable guidance to farmers before avoidable congestion occurs?**
-
-The system follows three clear operational loops:
-- **For Farmers**: See $\longrightarrow$ Understand $\longrightarrow$ Act
-- **For Operators**: Monitor $\longrightarrow$ Predict $\longrightarrow$ Act $\longrightarrow$ Communicate
-- **For Administrators**: Overview $\longrightarrow$ Identify $\longrightarrow$ Coordinate
+> **Know the crowd before it arrives.**
+> *Predict arrival pressure. Test coordination actions. Reach every farmer.*
+> 
+> Current Deployment: **[agriflow-ai-five.vercel.app](https://agriflow-ai-five.vercel.app)**
+> Repository: **[Sumathra-S/Agriflow-AI](https://github.com/Sumathra-S/Agriflow-AI)**
 
 ---
 
-## 📱 2. Basic Phone Fallback Matrix
+## 🌾 1. Core Product Definition
 
-AgriFlow is strictly **NOT** smartphone-only. Every function is accessible across three tiers of technology:
+**AgriFlow** is an operational intelligence and inclusive communication layer for agricultural procurement centres.
 
-| Function | Smartphone | Basic Button Phone | Assisted Access |
-| :--- | :---: | :---: | :---: |
-| **Centre Status** | App | IVR | Operator / CSC |
-| **Booking a Visit** | App | DTMF IVR | Operator Assisted Desk |
-| **Booking Status** | App | IVR / SMS | Operator / CSC |
-| **Alerts & Warnings** | App | SMS / Outbound Voice | Operator |
-| **Recommended Time** | App | Voice Call / SMS | Operator |
-| **Help & Guidance** | App | IVR (1800-AGRIFLOW) | In-person Helpdesk |
+It does **NOT** claim to replace existing government procurement portals (e.g. e-NAM, PM-KISAN, State Food & Civil Supplies). Existing systems manage farmer registration, token issuing, and notifications. AgriFlow focuses precisely on the operational bottleneck **after booking**:
+1. **Predicting arrival congestion in tonnes** before tractor trolleys reach the gate.
+2. **Coordinating multi-centre cluster rebalancing** when an individual mandi hits capacity.
+3. **Reaching every farmer** through smartphones, basic phone SMS, interactive voice (IVR), USSD (`*384#`), and Common Service Centre (CSC) assisted access.
 
 ---
 
-## 🚜 3. Farmer Experience (Zero AI Terminology)
+## 🏛️ 2. Strict Role-Based Architecture (RBAC)
 
-Farmers never see words like *"AI Prediction"*, *"Machine Learning"*, *"Risk Score"*, *"Forecast Accuracy"*, or *"Processing Capacity"*. Instead, they see clear, human-centered guidance:
+AgriFlow strictly enforces three separate operational experiences:
 
-### 🌾 Greeting & Centre Card
-- Localized greeting: **வணக்கம் 👋** (Tamil) / **नमस्ते 👋** (Hindi) / **Welcome 👋** (English)
-- **Centre Status**:
-  - 🟢 **LOW CROWD** — Crowd is currently low. You may visit now.
-  - 🟡 **MODERATE CROWD** — Waiting may take longer. Better time: After 2:00 PM.
-  - 🔴 **HIGH CROWD** — More farmers are currently at the centre. If possible, visit after 2:00 PM. Your booking remains active.
-
-### 🕒 Best Time Card
-- **BEST TIME TO VISIT: After 2:00 PM** (Less crowd is expected).
-
-### 🔊 Voice-First Accessibility
-- **🔊 Listen** button reads the status and arrival recommendation aloud in the farmer's selected language (**தமிழ்**, **हिन्दी**, **English**) using speech synthesis.
-
-### 📅 Only Four Main Actions
-1. **My Booking** (View token or book a visit: 🟢 10:00 AM / 🟡 12:00 PM / 🟢 02:00 PM)
-2. **Centre Status** (Current crowd level and recommended arrival window)
-3. **Alerts** (Verified alerts with SMS copy and voice playback)
-4. **Help** (5 common questions + Direct 1-tap call to `1800-180-1551` + **🎤 Speak** input)
-
----
-
-## 📞 4. Interactive Phone IVR & Missed Call Simulator
-
-Accessible directly from the header via the **"📞 IVR / Basic Phone"** button:
-
-1. **Language Selection**:
-   - Automated Voice: *"Welcome to AgriFlow. தமிழுக்கு 1ஐ அழுத்தவும். हिंदी के लिए 2 दबाएं. Press 3 for English."*
-2. **Farmer Identification**:
-   - Keypad entry: Enter Farmer ID + # (e.g. `1024#`).
-   - Recognizes registered farmer profile (Sukhwinder Sharma).
-3. **Services Menu**:
-   - Press 1 to check token booking status.
-   - Press 2 to book a visit slot (10 AM, 12 PM, 2 PM).
-   - Press 3 to hear centre crowd information.
-   - Press 4 to get official helpdesk contact.
-4. **Interactive 12-Key DTMF Dialpad**:
-   - On-screen basic button phone keypad with audio feedback and speech synthesis.
-5. **Missed Call Callback Simulation**:
-   - Click *"Test Missed Call Callback"* $\longrightarrow$ system identifies registered caller $\longrightarrow$ initiates automated callback within 2 seconds!
+```
+                               ┌──────────────────────────────────────────────────────────┐
+                               │                    AGRIFLOW AI LAYER                     │
+                               └──────────────────────────────────────────────────────────┘
+                                                            │
+                     ┌──────────────────────────────────────┼──────────────────────────────────────┐
+                     │                                      │                                      │
+                     ▼                                      ▼                                      ▼
+           👨‍🌾 FARMER PORTAL                   🏢 CENTRE OPERATOR                     🏛️ DISTRICT ADMIN
+         (Rural & Mobile-First)              (Singanallur Hub - Centre C)           (Multi-Centre Command)
+         ────────────────────────             ──────────────────────────             ─────────────────────
+         1. Home (Next Procurement)           1. Centre Overview                     1. All Centres (12 Mandis)
+         2. Book Slot (5-Step Wizard)         2. Live Queue & Calling                2. Farmers Directory
+         3. Best Centre (Explainable)         3. Arrivals Desk (Gate 2)              3. Operators & Shifts
+         4. My Queue (Token AF-108)           4. Token Management                    4. Master Bookings Register
+         5. Procurement Status (8-Stage)      5. Weighing Console (60t)              5. Quantity Demand (Tonnes)
+         6. Payment (₹23/kg MSP DBT)          6. Quality Check (Moisture)            6. Congestion Monitor
+         7. Notifications (Urgent/Info)       7. Procurement Sanctioning             7. Predictive Analytics
+         8. Profile (PM-KISAN Linked)         8. Counters & Bays                     8. PFMS Payments Ledger
+         9. Help (Helpline & USSD *384#)      9. Capacity (100t vs 90t)              9. Tamper Audit Logs (SHA-256)
+                                             10. Operational Alerts                 10. Demand Surge Simulator ⭐
+                                                                                    11. District Policy Settings
+                                                                                    12. System Health (/api/health)
+```
 
 ---
 
-## 📢 5. Operator Communication Centre
+## ⚡ 3. Grand Finale Killer Features & Innovations
 
-Located in the Operator Sidebar (`/operator` $\longrightarrow$ **Communication Centre**):
+### A. Quantity-Aware Demand Engine
+- Traditional systems count farmer appointments blindly (e.g. "20 farmers").
+- AgriFlow models capacity and demand in **Metric Tonnes**:
+  - **Singanallur Hub (Centre C)**: Capacity = `100t`
+  - Booked Slots = `72t`
+  - Predicted Walk-In Demand = `+18t`
+  - Total Expected Load = `90t` (90% Utilization — **NEAR CAPACITY**)
 
-- **Target Farmer Selection**:
-  - ☑ Farmers with upcoming bookings (48 selected)
-  - ☑ Farmers affected by crowd (32 selected)
-  - ☑ Gate 2 waiting queue (12 selected)
-- **Message Types (Verified Templates)**:
-  - 🔴 Crowd Alert
-  - 🟡 Recommended Arrival Time
-  - 📅 Booking Confirmation
-  - ℹ Centre Information
-- **Multi-Channel Dispatch**:
-  - ☑ SMS (Standard Cellular)
-  - ☑ Voice IVR Broadcast (Automated outbound call)
-  - ☑ Smartphone App Push
-- **🔊 Play Voice Preview**:
-  - Operator hears the exact synthesized voice broadcast before sending.
-- **Live Delivery Tracking**:
-  - **SMS**: ✓ Delivered: 42 | ⏳ Pending: 3 | ✕ Failed: 1
-  - **Voice**: ✓ Connected: 39 | ⏳ Calling: 5 | ✕ Busy: 2
-  - **App**: ✓ Pushed: 48
+### B. Predicted Walk-in Demand Estimation
+- Automatically calculates historical walk-in ratios (default `+25%`) and harvest speed index.
+- Accurately warns operators 45–60 minutes before unbooked tractor trolleys bottleneck the weighbridge.
 
----
+### C. Smart Arrival & Dynamic Departure Engine
+- Calculates personalized departure guidance:
+  $$\text{Departure Time} = \text{Expected Service Time} - \text{Travel Time} - \text{Buffer}$$
+- Example: **Token AF-108** at 11:30 AM slot $\longrightarrow$ *"Leave farm at 10:40 AM to arrive smoothly without standing in the sun."*
+- If a weighbridge delay occurs, the system **auto-recalculates** and notifies the farmer (+15m delay $\longrightarrow$ departure shifts to 10:55 AM).
 
-## 🤝 6. Operator-Assisted Booking Desk
-
-Located in the Operator Sidebar (`/operator` $\longrightarrow$ **Assisted Booking**):
-- *"A human is sometimes the best interface."*
-- Search farmer by ID, phone number, or name.
-- View preferred language and communication channel (e.g., F1024, Tamil, Voice preferred, SMS backup).
-- Select available arrival window (10:00 AM, 12:00 PM, 02:00 PM).
-- Confirm booking $\longrightarrow$ System creates token and automatically dispatches SMS/Voice confirmation.
-- 1-click **Print Token Slip** for paper receipts.
+### D. Demand Surge & Dynamic Redirection Simulator
+- District Admins can simulate real-world spikes: `+10t`, `+25t`, or `+50t`.
+- When volume exceeds `100t`, Centre C switches to **OVER CAPACITY** (Critical Red).
+- The automatic load balancer routes excess volume to **Centre B (Sulur APMC)** which has 45t free headroom.
+- Automated SMS/IVR advisories are generated to redirect incoming tractor traffic.
+- Evaluators can click `RESET DEMO` to immediately return to the 80t baseline.
 
 ---
 
-## 📊 7. Operator Dashboard
+## 📱 4. Rural & Inclusive Accessibility Matrix
 
-- **Left Sidebar**:
-  - 📊 Dashboard
-  - 👥 Queue Management
-  - 📅 Bookings Register
-  - 📢 Communication Centre
-  - 🤝 Assisted Booking
-  - 📈 Flow Reports
-  - ⚙ Centre Settings
-- **Top Section**:
-  - Farmers Waiting: **18**
-  - Expected Arrivals: **24**
-  - Processing Today: **42**
-  - Centre Status: **Moderate / High Pressure**
-- **Arrival Trend**:
-  - Simple timeline: 9 AM (Low) $\to$ 10 AM (Moderate) $\to$ 11 AM (High) $\to$ 12 PM (High) $\to$ 2 PM (Low)
-- **Congestion Prediction**:
-  - NEXT 2 HOURS: 🔴 **HIGH PRESSURE EXPECTED**
-  - **Why?** More farmers expected between 11 AM – 12 PM, Current queue increasing, Processing rate slower than arrival rate.
+| Channel | Technology | Use Case in AgriFlow |
+| :--- | :--- | :--- |
+| **Farmer Mobile Web** | Smartphone (2G/EDGE Mode) | 9 tabs, large contrast typography, dual navigation |
+| **Basic SMS** | 2G Cellular (CDAC / NIC) | Departure reminders, token call alerts, PFMS UTR voucher |
+| **Interactive Voice (IVR)** | Toll-Free `1800-180-1551` | Keypad DTMF menu in Tamil, Hindi, English, Punjabi |
+| **USSD Service** | Cellular Code `*384#` | Instant menu for offline token tracking without internet |
+| **CSC Assisted Desk** | In-Person Village Desk | Operator-assisted booking for elderly/non-literate farmers |
 
 ---
 
-## 🚀 8. Quick Start & Presentation Guide
+## 🎯 5. SIH Grand Finale Evaluator Demo Walkthrough (5-Minute Script)
 
-### Run Locally
+1. **Start on Landing Page**:
+   - Point out the core product definition and taglines.
+   - Click **Explore Platform** $\longrightarrow$ log in with demo credentials.
+
+2. **Demonstrate 👨‍🌾 Farmer Role**:
+   - **Home**: Next procurement session card (Singanallur, Token AF-108, 8 ahead).
+   - **Book Slot**: Walk through the 5-step wizard with crop, quantity in kg, date, vehicle, and AI centre recommendation.
+   - **Best Centre**: View transparent comparison between Centre C and Centre B.
+   - **My Queue**: Test the queue countdown (10 ahead $\longrightarrow$ 7 $\longrightarrow$ 5 $\longrightarrow$ 0 YOUR TURN!) and simulate delay.
+   - **Payment**: View the official Form J / MSP settlement voucher (1,000 kg @ ₹23/kg = ₹23,000 DBT).
+
+3. **Demonstrate 🏢 Centre Operator Role**:
+   - Switch role to **Operator** (Balwinder Dhillon, locked to Singanallur Centre C).
+   - Point out **Strict Isolation**: Clicking "Access Sulur Hub" triggers a `403 Forbidden` RBAC security notice.
+   - Test operational buttons in sequence:
+     `MARK ARRIVED` $\longrightarrow$ `CALL TOKEN` $\longrightarrow$ `START WEIGHING` $\longrightarrow$ `COMPLETE WEIGHING` $\longrightarrow$ `PASS QUALITY` $\longrightarrow$ `COMPLETE PROCUREMENT` $\longrightarrow$ `PAYMENT INITIATED`.
+
+4. **Demonstrate 🏛️ Administrator & Killer Surge Simulator**:
+   - Switch role to **District Administrator**.
+   - Navigate to **Demand Surge Simulator** tab.
+   - Click `+25 TONNES SURGE` $\longrightarrow$ Singanallur spikes to `105t` (OVER CAPACITY).
+   - Show how AgriFlow automatically balances load to Sulur Hub (Centre B) and dispatches advisories.
+   - Click `RESET DEMO` to return to baseline.
+   - Inspect **Audit Logs** (tamper-evident SHA-256 chain) and **System Health** (`/api/health` 200 OK).
+
+---
+
+## 🛠️ 6. Technology Stack & Defensibility
+
+- **Frontend**: React 18, TypeScript, Tailwind CSS, Lucide React Icons
+- **State Management**: Reactive Custom Event Bus (`src/services/engine/eventBus.ts`)
+- **Security & RBAC**: Strict centre isolation guards, farmer data privacy check, rate limiting
+- **Audit Logging**: SHA-256 signed tamper-evident ledger (`TamperEvidentAuditTrail.tsx`)
+- **Accessibility**: Web Speech Synthesis API, bilingual localization (English, Tamil, Hindi, Punjabi)
+- **Deployment**: Production-ready on Vercel (`npm run build` zero-warning TypeScript compilation)
+
+---
+
+## 🚀 7. Local Setup & Build
+
 ```bash
-# Install packages
+# Clone the repository
+git clone https://github.com/Sumathra-S/Agriflow-AI.git
+cd Agriflow-AI
+
+# Install dependencies
 npm install
 
-# Start preview server
-npm run preview
-# (or dev mode): npm run dev
+# Copy environment variables
+cp .env.example .env
+
+# Run type check
+npx tsc --noEmit
+
+# Run development server
+npm run dev
+
+# Production build
+npm run build
 ```
-Open **`http://localhost:4173`** in your browser.
 
-### Recommended 5-Minute Hackathon Demo Script
-
-1. **Farmer View (`/farmer`)**:
-   - Point out the greeting: **வணக்கம் 👋** / **Welcome 👋**.
-   - Show the simple crowd status: 🔴 **HIGH CROWD**.
-   - Show the guidance: 🕒 **BEST TIME TO VISIT: After 2:00 PM**.
-   - Click **🔊 Listen** to hear the audio read-out in Tamil/Hindi/English.
-2. **Basic Phone IVR Simulator**:
-   - Click **"📞 IVR / Basic Phone"** in the top header.
-   - Click *"Test Missed Call Callback"* to demonstrate zero-internet access.
-   - Press `1` for Tamil $\to$ enter `1024#` $\to$ press `2` to book a visit $\to$ press `3` for 2:00 PM $\to$ press `1` to confirm.
-3. **Operator Dashboard (`/operator`)**:
-   - Show the 5-second situational awareness cards (Waiting: 18, Expected: 24).
-   - Point out **"NEXT 2 HOURS: HIGH PRESSURE EXPECTED"** and the plain-language explainability reasons.
-4. **Communication Centre**:
-   - In sidebar, click **Communication Centre**.
-   - Show 48 upcoming farmers selected $\to$ click **🔊 Play Voice Preview** $\to$ click **Send Alert**.
-   - Show real-time delivery telemetry (42 delivered, 3 pending, 1 failed).
-5. **Assisted Booking**:
-   - In sidebar, click **Assisted Booking**. Search "Gurpreet", book 2:00 PM, and show the printable gate pass.
+---
+*Built with ❤️ for Indian Farmers & Smart India Hackathon 2026 Grand Finale.*

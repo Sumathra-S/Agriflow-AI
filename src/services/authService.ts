@@ -51,6 +51,52 @@ export class AuthService {
     return false;
   }
 
+  /**
+   * Strict Centre Isolation check for Centre Operators.
+   * Operator assigned to Centre C can NEVER view or mutate Centre B/A data.
+   */
+  public canAccessCentre(role: UserRole, userCentreId: string | undefined, targetCentreId: string): boolean {
+    if (role === 'ADMIN') return true;
+    if (role === 'OPERATOR') {
+      return !!userCentreId && userCentreId === targetCentreId;
+    }
+    return false;
+  }
+
+  /**
+   * Farmer Privacy check.
+   * Farmer A can only view Farmer A's booking, token and payout records.
+   */
+  public canAccessFarmerData(role: UserRole, loggedInFarmerId: string | undefined, targetFarmerId: string): boolean {
+    if (role === 'ADMIN' || role === 'OPERATOR') return true;
+    if (role === 'FARMER') {
+      return !!loggedInFarmerId && loggedInFarmerId === targetFarmerId;
+    }
+    return false;
+  }
+
+  /**
+   * Simple in-memory rate limiter for SMS, OTP and booking requests.
+   */
+  private rateLimitMap = new Map<string, { count: number; expiresAt: number }>();
+
+  public checkRateLimit(key: string, maxRequests: number = 10, windowMs: number = 60000): { allowed: boolean; remaining: number; resetTimeMs: number } {
+    const now = Date.now();
+    const entry = this.rateLimitMap.get(key);
+
+    if (!entry || entry.expiresAt <= now) {
+      this.rateLimitMap.set(key, { count: 1, expiresAt: now + windowMs });
+      return { allowed: true, remaining: maxRequests - 1, resetTimeMs: now + windowMs };
+    }
+
+    if (entry.count >= maxRequests) {
+      return { allowed: false, remaining: 0, resetTimeMs: entry.expiresAt };
+    }
+
+    entry.count += 1;
+    return { allowed: true, remaining: maxRequests - entry.count, resetTimeMs: entry.expiresAt };
+  }
+
   public logAction(actor: string, role: UserRole, action: string, affectedResource: string, details?: string): AuditLogEntry {
     const entry: AuditLogEntry = {
       id: `log-${Date.now()}`,
@@ -73,3 +119,4 @@ export class AuthService {
 }
 
 export const authService = new AuthService();
+

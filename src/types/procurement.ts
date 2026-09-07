@@ -484,4 +484,98 @@ export interface CentreNetworkNode {
   spareCapacitySlots: number;
 }
 
+// ==========================================
+// MASTER UPGRADE: QUANTITY & ROLE NAVIGATION
+// ==========================================
+
+export type CongestionState =
+  | 'LOW'
+  | 'MODERATE'
+  | 'HIGH'
+  | 'NEAR_CAPACITY'
+  | 'OVER_CAPACITY';
+
+export interface QuantityDemandMetrics {
+  centreId: string;
+  centreName: string;
+  location: string;
+  capacityTonnes: number;               // e.g. 100
+  bookedQuantityTonnes: number;         // e.g. 72
+  predictedWalkInQuantityTonnes: number;// e.g. 18
+  expectedTotalDemandTonnes: number;    // e.g. 90
+  remainingCapacityTonnes: number;      // e.g. 10
+  quantityUtilizationPct: number;       // e.g. 90
+  congestionState: CongestionState;
+  farmerCount: number;                  // e.g. 40
+  activeCounters: number;               // e.g. 3
+  averageWaitMinutes: number;           // e.g. 25
+  averageProcessingMinutesPerTonne: number; // e.g. 4.5
+  distanceKm?: number;
+  travelMinutes?: number;
+}
+
+export interface SmartArrivalGuidance {
+  tokenNumber: string;               // e.g. "AF-108"
+  centreName: string;                // e.g. "Centre C (Singanallur)"
+  expectedServiceTime: string;       // e.g. "11:05 AM"
+  travelDurationMinutes: number;     // e.g. 20
+  safetyBufferMinutes: number;       // e.g. 5
+  recommendedDepartureTime: string;  // e.g. "10:40 AM"
+  queueWaitMinutes: number;          // e.g. 25
+  farmersAhead: number;              // e.g. 8
+  countdownAhead?: number;           // alias for farmersAhead
+  currentServingToken: string;       // e.g. "AF-098"
+  statusMessage: string;             // "Leave around 10:40 AM to arrive near your service time."
+  conditionsChanged: boolean;
+  lastRecalculatedAt: string;
+}
+
+export interface SmartBookingInput {
+  crop: 'Paddy' | 'Wheat' | 'Maize' | 'Cotton' | 'Mustard';
+  quantityKg: number;
+  date: string;
+  village: string;
+  priorityPreference: 'NEAREST' | 'SHORTEST_WAIT' | 'PREFERRED_CENTRE' | 'EARLIEST_SLOT';
+  preferredCentreId?: string;
+  preferenceStrength: 'STRONG' | 'PREFERRED' | 'NO_PREFERENCE';
+}
+
+export type FarmerNavigationTab =
+  | 'home'
+  | 'book'
+  | 'best-centre'
+  | 'queue'
+  | 'status'
+  | 'payment'
+  | 'notifications'
+  | 'profile'
+  | 'help';
+
+export type OperatorNavigationTab =
+  | 'overview'
+  | 'queue'
+  | 'arrivals'
+  | 'tokens'
+  | 'weighing'
+  | 'quality'
+  | 'procurement'
+  | 'counters'
+  | 'capacity'
+  | 'alerts';
+
+export type AdminNavigationTab =
+  | 'centres'
+  | 'farmers'
+  | 'operators'
+  | 'bookings'
+  | 'demand'
+  | 'congestion'
+  | 'analytics'
+  | 'payments'
+  | 'audit_logs'
+  | 'simulator'
+  | 'settings'
+  | 'health';
+
+
 

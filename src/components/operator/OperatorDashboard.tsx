@@ -22,6 +22,8 @@ import {
   CheckCircle2,
   CalendarClock,
   ShieldAlert,
+  Truck,
+  Scale,
   Send,
   UserCheck,
   GraduationCap,
@@ -44,15 +46,25 @@ import { DistrictCommandCentre } from './DistrictCommandCentre';
 import { WhatIfControlRoom } from './WhatIfControlRoom';
 import { TamperEvidentAuditTrail } from './TamperEvidentAuditTrail';
 import { ModelGovernanceCard } from './ModelGovernanceCard';
+import { OperatorLifecycleWorkflow } from './OperatorLifecycleWorkflow';
 
-type OperatorTab =
+export type OperatorTab =
   | 'dashboard'
+  | 'overview'
+  | 'queue'
+  | 'arrivals'
+  | 'tokens'
+  | 'weighing'
+  | 'quality'
+  | 'procurement'
+  | 'counters'
+  | 'capacity'
+  | 'alerts'
   | 'command-centre'
   | 'what-if'
   | 'audit-trail'
   | 'model-governance'
   | 'simulator'
-  | 'queue'
   | 'bookings'
   | 'communication'
   | 'assisted'
@@ -105,36 +117,73 @@ export const OperatorDashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 pb-12">
-      {/* 1. LEFT SIDEBAR NAVIGATION (Section 49) */}
-      <aside className="w-full lg:w-60 flex-shrink-0">
-        <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-gov sticky top-20">
+      {/* 1. LEFT SIDEBAR NAVIGATION (Section 49 & 10 Dedicated Operator Tabs) */}
+      <aside className="w-full lg:w-64 flex-shrink-0">
+        <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-gov sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
           <div className="px-3 py-2 border-b border-slate-100 mb-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Operations Control
             </span>
-            <h3 className="text-xs font-black text-slate-900 mt-0.5">Singanallur Procurement Centre</h3>
+            <h3 className="text-xs font-black text-slate-900 mt-0.5">Singanallur Hub (Centre C)</h3>
           </div>
 
-          <nav className="space-y-1 text-xs font-semibold">
+          {/* SECTION: 10 CORE OPERATOR TABS */}
+          <div className="text-[10px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider">
+            Station Console (10 Tabs)
+          </div>
+          <nav className="space-y-1 text-xs font-semibold mb-3">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
-              { id: 'command-centre', label: 'Regional Control', icon: <Building2 className="h-4 w-4 text-gov-700" />, badge: 'Cluster' },
-              { id: 'what-if', label: 'What-If Control Room', icon: <Zap className="h-4 w-4 text-amber-600" />, badge: 'AI Levers' },
-              { id: 'audit-trail', label: 'Tamper Audit Trail', icon: <ShieldCheck className="h-4 w-4 text-emerald-700" />, badge: 'SHA-256' },
-              { id: 'model-governance', label: 'Model Governance', icon: <Brain className="h-4 w-4 text-purple-700" />, badge: 'Metrics' },
-              { id: 'simulator', label: 'Crowd Shift Simulator', icon: <Sliders className="h-4 w-4 text-emerald-700" />, badge: 'Simulate' },
-              { id: 'queue', label: 'Queue Management', icon: <Users className="h-4 w-4" /> },
-              { id: 'bookings', label: 'Bookings Register', icon: <CalendarDays className="h-4 w-4" /> },
-              { id: 'communication', label: 'Communication Centre', icon: <MessageSquare className="h-4 w-4 text-gov-700" />, badge: 'Broadcast' },
-              { id: 'assisted', label: 'Assisted Booking', icon: <UserPlus className="h-4 w-4 text-amber-700" />, badge: 'Desk' },
-              { id: 'training', label: 'Training & Pilot Metrics', icon: <GraduationCap className="h-4 w-4 text-emerald-700" />, badge: 'Pilot' },
-              { id: 'reports', label: 'Flow Reports', icon: <BarChart3 className="h-4 w-4" /> },
-              { id: 'settings', label: 'Centre Settings', icon: <Settings className="h-4 w-4" /> },
+              { id: 'dashboard', label: 'Centre Overview', icon: <LayoutDashboard className="h-4 w-4" /> },
+              { id: 'queue', label: 'Live Queue', icon: <Users className="h-4 w-4 text-gov-800" />, badge: `${currentQueue}` },
+              { id: 'arrivals', label: 'Arrivals Desk', icon: <Truck className="h-4 w-4 text-slate-700" />, badge: 'Gates' },
+              { id: 'tokens', label: 'Token Management', icon: <UserPlus className="h-4 w-4 text-amber-700" /> },
+              { id: 'weighing', label: 'Weighing Console', icon: <Scale className="h-4 w-4 text-blue-700" />, badge: '60t' },
+              { id: 'quality', label: 'Quality Check', icon: <CheckSquare className="h-4 w-4 text-purple-700" />, badge: 'Moisture' },
+              { id: 'procurement', label: 'Procurement & MSP', icon: <CheckCircle2 className="h-4 w-4 text-emerald-700" /> },
+              { id: 'counters', label: 'Counters & Bays', icon: <Building2 className="h-4 w-4 text-slate-700" /> },
+              { id: 'capacity', label: 'Capacity & Demand', icon: <Activity className="h-4 w-4 text-gov-800" />, badge: '100t' },
+              { id: 'alerts', label: 'Operational Alerts', icon: <ShieldAlert className="h-4 w-4 text-rose-700" />, badge: congestionRisk === 'HIGH' ? 'SURGE' : undefined },
             ].map(item => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as OperatorTab)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
+                  activeTab === item.id
+                    ? 'bg-gov-800 text-white font-bold shadow-xs'
+                    : 'text-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  {item.icon}
+                  <span>{item.label}</span>
+                </div>
+                {item.badge && activeTab !== item.id && (
+                  <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-bold font-mono">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </nav>
+
+          {/* SECTION: DECISION & PLANNING TOOLS */}
+          <div className="text-[10px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider border-t border-slate-100 pt-2">
+            Decision Tools
+          </div>
+          <nav className="space-y-1 text-xs font-semibold">
+            {[
+              { id: 'command-centre', label: 'Regional Control', icon: <Building2 className="h-4 w-4 text-gov-700" />, badge: 'Cluster' },
+              { id: 'what-if', label: 'What-If Control Room', icon: <Zap className="h-4 w-4 text-amber-600" />, badge: 'AI Levers' },
+              { id: 'simulator', label: 'Crowd Shift Simulator', icon: <Sliders className="h-4 w-4 text-emerald-700" />, badge: 'Simulate' },
+              { id: 'communication', label: 'Communication Hub', icon: <MessageSquare className="h-4 w-4 text-gov-700" />, badge: 'Broadcast' },
+              { id: 'training', label: 'Training & SOP', icon: <GraduationCap className="h-4 w-4 text-emerald-700" />, badge: 'Pilot' },
+              { id: 'audit-trail', label: 'Tamper Audit Trail', icon: <ShieldCheck className="h-4 w-4 text-emerald-700" /> },
+              { id: 'model-governance', label: 'Model Governance', icon: <Brain className="h-4 w-4 text-purple-700" /> },
+            ].map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id as OperatorTab)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
                   activeTab === item.id
                     ? 'bg-gov-800 text-white font-bold shadow-xs'
                     : 'text-slate-700 hover:bg-slate-100'
@@ -157,6 +206,16 @@ export const OperatorDashboard: React.FC = () => {
 
       {/* 2. MAIN OPERATOR CONTENT VIEWPORT */}
       <div className="flex-1 min-w-0 space-y-6">
+        {/* OPERATOR WORKFLOW STATION VIEWS */}
+        {activeTab === 'arrivals' && <OperatorLifecycleWorkflow activeStation="arrivals" />}
+        {activeTab === 'tokens' && <AssistedBookingScreen />}
+        {activeTab === 'weighing' && <OperatorLifecycleWorkflow activeStation="weighing" />}
+        {activeTab === 'quality' && <OperatorLifecycleWorkflow activeStation="quality" />}
+        {activeTab === 'procurement' && <OperatorLifecycleWorkflow activeStation="procurement" />}
+        {activeTab === 'counters' && <OperatorLifecycleWorkflow activeStation="counters" />}
+        {activeTab === 'capacity' && <OperatorLifecycleWorkflow activeStation="capacity" />}
+        {activeTab === 'alerts' && <OperatorLifecycleWorkflow activeStation="alerts" />}
+
         {/* REGIONAL COMMAND CENTRE TAB */}
         {activeTab === 'command-centre' && <DistrictCommandCentre />}
 
@@ -433,6 +492,8 @@ export const OperatorDashboard: React.FC = () => {
                 {currentQueue} Vehicles Active
               </span>
             </div>
+            {/* Interactive Token Calling Workflow */}
+            <OperatorLifecycleWorkflow activeStation="queue" />
             {/* Real-time Architecture Controller */}
             <OperationalControllerCard />
             <LiveQueueTable />
