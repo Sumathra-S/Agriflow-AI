@@ -10,19 +10,26 @@ import {
   Building2,
   Tractor,
   BarChart3,
-  PhoneCall
+  PhoneCall,
+  Hash
 } from 'lucide-react';
 
 interface HeaderProps {
   onToggleNotifications?: () => void;
   unreadCount?: number;
   onOpenIvr?: () => void;
+  onOpenUssd?: () => void;
+  onNavigateLanding?: () => void;
+  onOpenBasicPhone?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onToggleNotifications,
   unreadCount = 1,
-  onOpenIvr
+  onOpenIvr,
+  onOpenUssd,
+  onNavigateLanding,
+  onOpenBasicPhone
 }) => {
   const { role, setRole, user } = useAuth();
   const { congestionRisk } = useSimulation();
@@ -104,11 +111,11 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
-              <span>Predict. Coordinate. Reach Every Farmer.</span>
+              <span>Know the crowd before it arrives.</span>
               <span className="text-slate-300">•</span>
               <span className="flex items-center text-slate-600 font-medium">
                 <MapPin className="h-3 w-3 text-gov-700 mr-0.5" />
-                Mandi Kalan Centre
+                Singanallur Procurement Centre
               </span>
             </p>
           </div>
@@ -116,16 +123,53 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Section: IVR button, Time, Notifications & Role Switcher */}
         <div className="flex items-center gap-2.5 self-end md:self-auto">
-          {/* IVR Phone Simulation Trigger Button (Section 16-18) */}
-          {onOpenIvr && (
+          {/* Landing Page Switcher */}
+          {onNavigateLanding && (
             <button
-              onClick={onOpenIvr}
+              onClick={onNavigateLanding}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors"
+              title="Return to Public Service Presentation Landing Page"
+            >
+              <span>← Landing Page</span>
+            </button>
+          )}
+
+          {/* Unified Basic Phone Simulator Button */}
+          {onOpenBasicPhone ? (
+            <button
+              onClick={onOpenBasicPhone}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition-colors"
-              title="Launch Interactive Basic Phone IVR Simulator"
+              title="Launch Basic Phone Access Simulator (SMS / IVR / USSD)"
             >
               <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
-              <span>📞 IVR / Basic Phone</span>
+              <span>📞 Basic Phone (SMS/IVR/USSD)</span>
             </button>
+          ) : (
+            <>
+              {/* USSD Simulator Button */}
+              {onOpenUssd && (
+                <button
+                  onClick={onOpenUssd}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-900 hover:bg-emerald-950 text-white text-xs font-mono font-bold shadow-xs transition-colors border border-emerald-700"
+                  title="Launch Feature Phone *384# USSD Simulator"
+                >
+                  <Hash className="h-3.5 w-3.5 text-emerald-300" />
+                  <span>*384# USSD</span>
+                </button>
+              )}
+
+              {/* IVR Phone Simulation Trigger Button */}
+              {onOpenIvr && (
+                <button
+                  onClick={onOpenIvr}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition-colors"
+                  title="Launch Interactive Basic Phone IVR Simulator"
+                >
+                  <PhoneCall className="h-3.5 w-3.5 text-emerald-200" />
+                  <span>📞 IVR / Phone</span>
+                </button>
+              )}
+            </>
           )}
 
           {/* Live Date / Time Badge */}

@@ -10,8 +10,28 @@ import {
 } from '../types/procurement';
 import { voiceService } from './voiceService';
 
-// Registered Demo Farmer Profiles with Communication Preferences (Section 13)
-export const REGISTERED_FARMERS: FarmerProfile[] = [
+export interface FarmerRegistrationData {
+  name: string;
+  phone: string;
+  village: string;
+  crop: string;
+  preferredLanguage: LanguageCode;
+  preferredChannel: CommunicationChannel;
+}
+
+export interface CallbackRequest {
+  id: string;
+  farmerName: string;
+  phone: string;
+  language: LanguageCode;
+  preferredTime: string;
+  issueCategory: string;
+  status: 'PENDING' | 'CALLED' | 'RESOLVED';
+  timestamp: string;
+}
+
+// Initial Registered Demo Farmer Profiles with Communication Preferences (Section 13)
+export const INITIAL_REGISTERED_FARMERS: FarmerProfile[] = [
   {
     farmerId: 'F1024',
     name: 'Sukhwinder Sharma',
@@ -53,6 +73,9 @@ export const REGISTERED_FARMERS: FarmerProfile[] = [
     activeToken: '1015'
   }
 ];
+
+// Backwards-compatible export
+export const REGISTERED_FARMERS: FarmerProfile[] = [...INITIAL_REGISTERED_FARMERS];
 
 export class MockSMSProvider implements ISMSProvider {
   async sendSMS(toPhone: string, message: string): Promise<{ success: boolean; messageId: string }> {
@@ -111,6 +134,8 @@ class TelecomManager {
   private voiceProvider: IVoiceProvider = new MockVoiceProvider();
   private ivrProvider: IIVRProvider = new MockIVRProvider();
 
+  public farmers: FarmerProfile[] = [...INITIAL_REGISTERED_FARMERS];
+
   public deliveryStats: DeliveryStats = {
     sms: { delivered: 42, pending: 3, failed: 1 },
     voice: { connected: 39, calling: 5, busy: 2 },
@@ -130,6 +155,29 @@ class TelecomManager {
       pendingCount: 3,
       failedCount: 1,
       status: 'COMPLETED'
+    }
+  ];
+
+  public callbacks: CallbackRequest[] = [
+    {
+      id: 'CB-401',
+      farmerName: 'Baldev Raj',
+      phone: '98150-77889',
+      language: 'en',
+      preferredTime: 'Within 15 mins',
+      issueCategory: 'Tractor trailer breakdown on approach road',
+      status: 'PENDING',
+      timestamp: '11:10 AM'
+    },
+    {
+      id: 'CB-402',
+      farmerName: 'Harwinder Kaur',
+      phone: '98722-44556',
+      language: 'ta',
+      preferredTime: 'After 2:00 PM',
+      issueCategory: 'Moisture pre-check certificate query',
+      status: 'PENDING',
+      timestamp: '10:45 AM'
     }
   ];
 
@@ -164,6 +212,65 @@ class TelecomManager {
     this.deliveryStats.app.pushed += farmerCount;
 
     return newJob;
+  }
+
+  public registerFarmer(data: FarmerRegistrationData): FarmerProfile {
+    const newTokenNum = Math.floor(1030 + Math.random() * 900).toString();
+    const newFarmer: FarmerProfile = {
+      farmerId: `F${newTokenNum}`,
+      name: data.name,
+      phone: data.phone,
+      preferredLanguage: data.preferredLanguage,
+      preferredChannel: data.preferredChannel,
+      backupChannel: data.preferredChannel === 'SMS' ? 'VOICE' : 'SMS',
+      village: data.village,
+      activeToken: newTokenNum
+    };
+
+    this.farmers = [newFarmer, ...this.farmers];
+    REGISTERED_FARMERS.unshift(newFarmer);
+    return newFarmer;
+  }
+
+  public getFarmers(): FarmerProfile[] {
+    return this.farmers;
+  }
+
+  public requestCallback(req: Omit<CallbackRequest, 'id' | 'status' | 'timestamp'>): CallbackRequest {
+    const newCb: CallbackRequest = {
+      ...req,
+      id: `CB-${Math.floor(100 + Math.random() * 900)}`,
+      status: 'PENDING',
+      timestamp: 'Just now'
+    };
+    this.callbacks = [newCb, ...this.callbacks];
+    return newCb;
+  }
+
+  public getCallbacks(): CallbackRequest[] {
+    return this.callbacks;
+  }
+
+  public resolveCallback(id: string): void {
+    this.callbacks = this.callbacks.map(cb =>
+      cb.id === id ? { ...cb, status: 'RESOLVED' } : cb
+    );
+  }
+
+  public async triggerCallbackCall(id: string): Promise<boolean> {
+    const cb = this.callbacks.find(c => c.id === id);
+    if (!cb) return false;
+
+    this.callbacks = this.callbacks.map(c =>
+      c.id === id ? { ...c, status: 'CALLED' } : c
+    );
+
+    await this.voiceProvider.triggerOutboundCall(
+      cb.phone,
+      `Hello ${cb.farmerName}, this is Mandi Kalan procurement centre operator returning your callback request.`,
+      cb.language
+    );
+    return true;
   }
 }
 

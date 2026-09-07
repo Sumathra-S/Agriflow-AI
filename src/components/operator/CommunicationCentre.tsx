@@ -43,9 +43,9 @@ export const CommunicationCentre: React.FC = () => {
   // Templates in Tamil, Hindi, and English (strictly template-based, not ungrounded LLM)
   const templates: Record<string, Record<LanguageCode, string>> = {
     CROWD_ALERT: {
-      ta: 'அக்ரிஃப்ளோ தகவல்: மண்டி கலான் கொள்முதல் நிலையத்தில் தற்போது அதிக கூட்டம் உள்ளது. காத்திருப்பு நேரத்தை குறைக்க, முடிந்தால் மதியம் 2:00 மணிக்கு மேல் வரவும். உங்கள் முன்பதிவு ரத்தாகாது.',
-      hi: 'एग्रीफ्लो सूचना: मंडी कलां खरीद केंद्र पर वर्तमान में भारी भीड़ है। प्रतीक्षा समय कम करने के लिए, यदि संभव हो तो दोपहर 2:00 बजे के बाद आएं। आपकी बुकिंग मान्य रहेगी।',
-      en: 'AGRIFLOW UPDATE: Mandi Kalan centre is currently experiencing high arrival pressure. Recommended visit: After 2:00 PM. Your booking remains fully active and guaranteed.'
+      ta: 'அக்ரிஃப்ளோ தகவல்: சிங்காநல்லூர் கொள்முதல் நிலையத்தில் தற்போது அதிக கூட்டம் உள்ளது. காத்திருப்பு நேரத்தை குறைக்க, முடிந்தால் மதியம் 2:00 மணிக்கு மேல் வரவும். உங்கள் முன்பதிவு ரத்தாகாது.',
+      hi: 'एग्रीफ्लो सूचना: सिंगनल्लूर खरीद केंद्र पर वर्तमान में भारी भीड़ है। प्रतीक्षा समय कम करने के लिए, यदि संभव हो तो दोपहर 2:00 बजे के बाद आएं। आपकी बुकिंग मान्य रहेगी।',
+      en: 'AGRIFLOW UPDATE: Singanallur centre is currently experiencing high arrival pressure. Recommended visit: After 2:00 PM. Your booking remains fully active and guaranteed.'
     },
     RECOMMENDED_ARRIVAL: {
       ta: 'அக்ரிஃப்ளோ வருகை வழிகாட்டி: இன்று மதியம் 2:00 மணிக்கு மேல் வருவது உங்கள் டிராக்டர் காத்திருக்கும் நேரத்தை குறைக்கும். டோக்கன் முறை பாதுகாப்பானது.',
@@ -53,14 +53,14 @@ export const CommunicationCentre: React.FC = () => {
       en: 'AGRIFLOW ADVISORY: Arriving after 2:00 PM will significantly reduce tractor waiting time. Your token priority is protected.'
     },
     BOOKING_CONFIRMATION: {
-      ta: 'அக்ரிஃப்ளோ உறுதிப்படுத்தல்: உங்கள் நெல் கொள்முதல் முன்பதிவு உறுதி செய்யப்பட்டது. டோக்கன் #1024. நுழைவாயில் 2 (மேற்கு எடை மேடை).',
-      hi: 'एग्रीफ्लो पुष्टि: आपकी धान खरीद बुकिंग कन्फर्म हो गई है। टोकन #1024। गेट नंबर 2 (पश्चिम तौल कांटा)।',
-      en: 'AGRIFLOW CONFIRMATION: Your Paddy procurement booking is confirmed. Token #1024. Gate 2 (Weighbridge West).'
+      ta: 'அக்ரிஃப்ளோ உறுதிப்படுத்தல்: உங்கள் நெல் கொள்முதல் முன்பதிவு உறுதி செய்யப்பட்டது. டோக்கன் #1024. நுழைவாயில் 2 (சிங்காநல்லூர்).',
+      hi: 'एग्रीफ्लो पुष्टि: आपकी धान खरीद बुकिंग कन्फर्म हो गई है। टोकन #1024। गेट नंबर 2 (सिंगनल्लूर)।',
+      en: 'AGRIFLOW CONFIRMATION: Your Paddy procurement booking is confirmed. Token #1024. Gate 2 (Singanallur Centre).'
     },
     CENTRE_INFO: {
-      ta: 'அக்ரிஃப்ளோ பொது அறிவிப்பு: கொள்முதல் நிலையம் இன்று மாலை 7:00 மணி வரை தொடர்ந்து செயல்படும். அனுமதிக்கப்பட்ட ஈரப்பதம் 17% வரை.',
-      hi: 'एग्रीफ्लो सार्वजनिक सूचना: खरीद केंद्र आज सायं 7:00 बजे तक खुला रहेगा। मानक नमी सीमा 17% है।',
-      en: 'AGRIFLOW NOTICE: Procurement centre will remain open until 7:00 PM today. Permissible moisture threshold is 17%.'
+      ta: 'அக்ரிஃப்ளோ பொது அறிவிப்பு: சிங்காநல்லூர் கொள்முதல் நிலையம் இன்று மாலை 7:00 மணி வரை தொடர்ந்து செயல்படும். அனுமதிக்கப்பட்ட ஈரப்பதம் 17% வரை.',
+      hi: 'एग्रीफ्लो सार्वजनिक सूचना: सिंगनल्लूर केंद्र आज सायं 7:00 बजे तक खुला रहेगा। मानक नमी सीमा 17% है।',
+      en: 'AGRIFLOW NOTICE: Singanallur procurement centre will remain open until 7:00 PM today. Permissible moisture threshold is 17%.'
     }
   };
 
@@ -383,6 +383,127 @@ export const CommunicationCentre: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* MODULE 5: COMMUNICATION ESCALATION PIPELINE (Section 9) */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-gov space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-black text-slate-900">
+                Communication Escalation Pipeline
+              </h3>
+              <span className="text-[10px] font-mono bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded font-bold uppercase">
+                Module 5 • Simulated Telephony
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Sending a message is not the same as reaching a farmer. Automatic escalation ensures zero dropped communications.
+            </p>
+          </div>
+          <div className="text-xs font-mono text-slate-500 bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
+            Selected: 18 • Delivered: 12 • Voice: 4 • Needs Follow-up: 2
+          </div>
+        </div>
+
+        {/* 5-Step Escalation Path */}
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+          <div className="flex items-center gap-1.5 text-slate-900">
+            <span className="h-5 w-5 rounded-full bg-gov-800 text-white flex items-center justify-center text-[10px] font-bold">1</span>
+            <span>Alert Created</span>
+          </div>
+          <span className="text-slate-300">→</span>
+          <div className="flex items-center gap-1.5 text-slate-900">
+            <span className="h-5 w-5 rounded-full bg-gov-800 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+            <span>SMS Dispatch</span>
+          </div>
+          <span className="text-slate-300">→</span>
+          <div className="flex items-center gap-1.5 text-slate-900">
+            <span className="h-5 w-5 rounded-full bg-gov-800 text-white flex items-center justify-center text-[10px] font-bold">3</span>
+            <span>Delivery Tracking</span>
+          </div>
+          <span className="text-slate-300">→</span>
+          <div className="flex items-center gap-1.5 text-amber-900">
+            <span className="h-5 w-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold">4</span>
+            <span>Voice Call Backup</span>
+          </div>
+          <span className="text-slate-300">→</span>
+          <div className="flex items-center gap-1.5 text-rose-900">
+            <span className="h-5 w-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px] font-bold">5</span>
+            <span>Operator Call List</span>
+          </div>
+        </div>
+
+        {/* Escalation Log Table */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-700 border-b border-slate-200 uppercase font-mono text-[10px]">
+              <tr>
+                <th className="px-3 py-2.5">Farmer Name</th>
+                <th className="px-3 py-2.5">Mobile</th>
+                <th className="px-3 py-2.5">Slot</th>
+                <th className="px-3 py-2.5">SMS Status</th>
+                <th className="px-3 py-2.5">Voice Backup</th>
+                <th className="px-3 py-2.5">Escalation State</th>
+                <th className="px-3 py-2.5 text-right">Operator Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-medium">
+              <tr className="hover:bg-slate-50/80">
+                <td className="px-3 py-2.5 font-bold text-slate-900">Sukhwinder Sharma</td>
+                <td className="px-3 py-2.5 font-mono text-slate-600">98765-43210</td>
+                <td className="px-3 py-2.5">11:30 AM</td>
+                <td className="px-3 py-2.5 text-emerald-700 font-bold">✓ Delivered</td>
+                <td className="px-3 py-2.5 text-slate-400">Not Needed</td>
+                <td className="px-3 py-2.5"><span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Reached</span></td>
+                <td className="px-3 py-2.5 text-right text-slate-400">Done</td>
+              </tr>
+              <tr className="hover:bg-slate-50/80">
+                <td className="px-3 py-2.5 font-bold text-slate-900">Ramasamy K.</td>
+                <td className="px-3 py-2.5 font-mono text-slate-600">98421-33445</td>
+                <td className="px-3 py-2.5">12:00 PM</td>
+                <td className="px-3 py-2.5 text-rose-700 font-semibold">✕ Failed (Timeout)</td>
+                <td className="px-3 py-2.5 text-emerald-700 font-bold">✓ Connected (32s)</td>
+                <td className="px-3 py-2.5"><span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">Voice Reached</span></td>
+                <td className="px-3 py-2.5 text-right text-slate-400">Done</td>
+              </tr>
+              <tr className="hover:bg-amber-50/50 bg-amber-50/30">
+                <td className="px-3 py-2.5 font-bold text-slate-900">Murugesan P.</td>
+                <td className="px-3 py-2.5 font-mono text-slate-600">98940-11223</td>
+                <td className="px-3 py-2.5">11:00 AM</td>
+                <td className="px-3 py-2.5 text-rose-700 font-semibold">✕ Undelivered</td>
+                <td className="px-3 py-2.5 text-rose-700 font-semibold">✕ Busy (3 tries)</td>
+                <td className="px-3 py-2.5"><span className="text-[10px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold animate-pulse">Needs Call</span></td>
+                <td className="px-3 py-2.5 text-right">
+                  <a
+                    href="tel:9894011223"
+                    className="inline-flex items-center gap-1 bg-gov-800 hover:bg-gov-900 text-white text-[11px] font-bold px-2 py-1 rounded shadow-xs"
+                  >
+                    <PhoneCall className="h-3 w-3" />
+                    <span>Call Now</span>
+                  </a>
+                </td>
+              </tr>
+              <tr className="hover:bg-amber-50/50 bg-amber-50/30">
+                <td className="px-3 py-2.5 font-bold text-slate-900">Baldev Raj</td>
+                <td className="px-3 py-2.5 font-mono text-slate-600">98150-77889</td>
+                <td className="px-3 py-2.5">12:30 PM</td>
+                <td className="px-3 py-2.5 text-amber-700 font-semibold">⏳ Network Queue</td>
+                <td className="px-3 py-2.5 text-slate-400">Pending</td>
+                <td className="px-3 py-2.5"><span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">In Escalation</span></td>
+                <td className="px-3 py-2.5 text-right">
+                  <button
+                    onClick={() => alert('Simulated outbound retry triggered for Baldev Raj')}
+                    className="inline-flex items-center gap-1 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-[11px] font-bold px-2 py-1 rounded"
+                  >
+                    <RotateCw className="h-3 w-3" />
+                    <span>Retry</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

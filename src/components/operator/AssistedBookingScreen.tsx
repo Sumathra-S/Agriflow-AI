@@ -64,7 +64,9 @@ export const AssistedBookingScreen: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500">Mandi Kalan Centre • Gate 1 Desk</span>
+          <span className="text-xs font-mono text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+            Singanallur Centre • Gate 1 Desk
+          </span>
         </div>
       </div>
 
@@ -140,6 +142,41 @@ export const AssistedBookingScreen: React.FC = () => {
                 <span className="text-slate-500">Registered Preferred Channel:</span>
                 <p className="font-bold text-gov-800 text-sm">{selectedFarmer.preferredChannel}</p>
               </div>
+            </div>
+
+            {/* MODULE 4: REACHABILITY PROFILE (Deterministic Rules) */}
+            <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-amber-950 uppercase tracking-wider text-[10px]">
+                  Farmer Reachability Profile (Module 4)
+                </span>
+                <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-mono font-bold">
+                  Rule: Deterministic
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
+                <div className="bg-white p-2 rounded-lg border border-amber-200">
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Device Type</span>
+                  <span className="font-bold text-slate-900">Basic Feature Phone</span>
+                </div>
+                <div className="bg-white p-2 rounded-lg border border-amber-200">
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Connectivity</span>
+                  <span className="font-bold text-amber-900">Low (2G / Offline)</span>
+                </div>
+                <div className="bg-white p-2 rounded-lg border border-amber-200">
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Language</span>
+                  <span className="font-bold text-slate-900">{selectedFarmer.preferredLanguage === 'ta' ? 'Tamil' : selectedFarmer.preferredLanguage === 'hi' ? 'Hindi' : 'English'}</span>
+                </div>
+                <div className="bg-white p-2 rounded-lg border border-amber-200">
+                  <span className="text-slate-400 block text-[9px] uppercase font-bold">Assistance</span>
+                  <span className="font-bold text-emerald-800">Voice Recommended</span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-amber-900 font-medium">
+                ★ <strong>Recommendation:</strong> Dispatch Outbound Voice Call in local language with cellular SMS fallback.
+              </p>
             </div>
 
             {/* Available Slot Selection */}

@@ -104,9 +104,9 @@ export interface Translations {
 export const TRANSLATIONS: Record<LanguageCode, Translations> = {
   ta: {
     appTitle: 'AgriFlow',
-    tagline: 'Predict. Coordinate. Reach Every Farmer.',
+    tagline: 'Know the crowd before it arrives.',
     greeting: 'வணக்கம் 👋',
-    centreName: 'மண்டி கலான் கொள்முதல் நிலையம்',
+    centreName: 'சிங்காநல்லூர் கொள்முதல் நிலையம் (Singanallur Centre)',
     centreStatus: 'நிலையத்தின் நிலை',
     
     // 3 Simplified Crowd States
@@ -209,9 +209,9 @@ export const TRANSLATIONS: Record<LanguageCode, Translations> = {
   },
   hi: {
     appTitle: 'AgriFlow',
-    tagline: 'Predict. Coordinate. Reach Every Farmer.',
+    tagline: 'Know the crowd before it arrives.',
     greeting: 'नमस्ते 👋',
-    centreName: 'मंडी कलां खरीद केंद्र',
+    centreName: 'सिंघानाल्लूर खरीद केंद्र (Singanallur Centre)',
     centreStatus: 'केंद्र की स्थिति',
 
     // 3 Simplified Crowd States
@@ -314,9 +314,9 @@ export const TRANSLATIONS: Record<LanguageCode, Translations> = {
   },
   en: {
     appTitle: 'AgriFlow',
-    tagline: 'Predict. Coordinate. Reach Every Farmer.',
+    tagline: 'Know the crowd before it arrives.',
     greeting: 'Welcome 👋',
-    centreName: 'Mandi Kalan Procurement Centre',
+    centreName: 'Singanallur Procurement Centre',
     centreStatus: 'Centre Status',
 
     // 3 Simplified Crowd States

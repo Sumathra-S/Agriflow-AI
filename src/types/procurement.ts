@@ -151,3 +151,160 @@ export interface IIVRProvider {
   startSession(callerPhone: string): { sessionId: string; currentStep: string };
   processDTMF(sessionId: string, digit: string): { nextStep: string; promptText: string; audioAction?: string };
 }
+
+export interface ReachabilityProfile {
+  farmerId: string;
+  name: string;
+  phone: string;
+  preferredLanguage: LanguageCode;
+  preferredChannel: CommunicationChannel;
+  deviceType: 'SMARTPHONE' | 'BASIC_FEATURE_PHONE';
+  connectivityLevel: 'HIGH_4G' | 'LOW_2G' | 'OFFLINE';
+  literacyAssistance: boolean;
+  recommendedChannel: CommunicationChannel;
+  backupChannel: CommunicationChannel;
+}
+
+export interface CrowdShiftSimulation {
+  shiftedCount: number;
+  before10am: { arrivals: number; risk: CongestionRisk };
+  before2pm: { arrivals: number; risk: CongestionRisk };
+  after10am: { arrivals: number; risk: CongestionRisk };
+  after2pm: { arrivals: number; risk: CongestionRisk };
+  status: 'IMPROVED' | 'NEUTRAL';
+}
+
+export interface EscalationItem {
+  id: string;
+  farmerName: string;
+  phone: string;
+  slotTime: string;
+  smsStatus: 'DELIVERED' | 'FAILED' | 'PENDING';
+  voiceStatus?: 'CONNECTED' | 'FAILED' | 'NOT_ATTEMPTED';
+  needsFollowUp: boolean;
+  followUpReason?: string;
+}
+
+// --- COMPLETE AGRIFLOW ARCHITECTURE TYPES ---
+
+export type ProcurementLifecycleStatus =
+  | 'REGISTERED'
+  | 'SLOT_ASSIGNED'
+  | 'FARMER_ARRIVED'
+  | 'WEIGHING'
+  | 'QUALITY_CHECK'
+  | 'ACCEPTED'
+  | 'PAYMENT_PROCESSING'
+  | 'COMPLETED';
+
+export interface ProcurementRecord {
+  id: string;
+  tokenNumber: string;
+  farmerId: string;
+  farmerName: string;
+  mobile: string;
+  centreId: string;
+  centreName: string;
+  crop: string;
+  allocatedWeightQtl: number;
+  actualWeightQtl?: number;
+  moisturePercentage?: number;
+  foreignMatterPercentage?: number;
+  mspPerQuintal: number;
+  grossAmount?: number;
+  dbtAccountRef?: string;
+  paymentStatus: 'PENDING' | 'IN_PROGRESS' | 'CREDITED' | 'FAILED';
+  currentStatus: ProcurementLifecycleStatus;
+  statusHistory: Array<{
+    status: ProcurementLifecycleStatus;
+    label: string;
+    timestamp: string;
+    operatorNote?: string;
+  }>;
+}
+
+export interface SlotSuitabilityFactors {
+  capacityAvailability: number; // 0-100
+  queueLoadFactor: number;      // 0-100 (higher = lighter queue)
+  processingSpeedFactor: number;// 0-100
+  cropHandlingFactor: number;   // 0-100
+  existingBookingsFactor: number; // 0-100
+  operationalConditionsFactor: number; // 0-100
+  overallSuitabilityScore: number;     // Weighted 0-100
+}
+
+export interface SlotCandidate {
+  id: string;
+  timeWindow: string;
+  date: string;
+  centreId: string;
+  centreName: string;
+  gateNumber: string;
+  maxCapacity: number;
+  currentBookings: number;
+  factors: SlotSuitabilityFactors;
+}
+
+export interface SlotExplanation {
+  title: string;
+  points: string[];
+  simplifiedFarmerAdvice: string;
+}
+
+export interface SlotAllocationResult {
+  assignedSlot: SlotCandidate;
+  explanation: SlotExplanation;
+  methodology: 'Explainable Intelligent Optimization';
+}
+
+export interface QueueState {
+  currentToken: string;
+  farmerToken: string;
+  tokensAhead: number;
+  estimatedWaitMinutes: number;
+  turnApproaching: boolean; // true if tokensAhead <= 3
+  lastUpdated: string;
+  disclaimer: string;
+}
+
+export interface DisruptionEvent {
+  id: string;
+  centreId: string;
+  centreName: string;
+  title: string;
+  delayMinutes: number;
+  reason: string;
+  affectedTokens: string[];
+  timestamp: string;
+  resolved: boolean;
+}
+
+export interface ReschedulingProposal {
+  id: string;
+  farmerId: string;
+  tokenNumber: string;
+  currentSlot: string;
+  proposedSlot: string;
+  reason: string;
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  timestamp: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  actor: string;
+  role: UserRole;
+  action: string;
+  affectedResource: string;
+  timestamp: string;
+  details?: string;
+}
+
+export interface SystemPolicy {
+  maxHourlyCapacity: number;
+  maxQueueBuffer: number;
+  defaultChannel: CommunicationChannel;
+  enableAutoRescheduleAdvisory: boolean;
+  targetMspRate: number; // e.g. 2320
+}
+

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useSimulation } from '../../context/SimulationContext';
 import { voiceService } from '../../services/voiceService';
+import { telecomManager, CallbackRequest } from '../../services/telecomService';
 import {
   HelpCircle,
   Clock,
@@ -14,7 +15,9 @@ import {
   Volume2,
   ChevronDown,
   ChevronUp,
-  ShieldCheck
+  ShieldCheck,
+  Headphones,
+  Calendar
 } from 'lucide-react';
 
 export const ProcurementHelp: React.FC = () => {
@@ -25,6 +28,13 @@ export const ProcurementHelp: React.FC = () => {
   const [customQuestion, setCustomQuestion] = useState<string>('');
   const [customAnswer, setCustomAnswer] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+
+  // Callback request state
+  const [callbackPhone, setCallbackPhone] = useState<string>('98765-43210');
+  const [callbackName, setCallbackName] = useState<string>('Sukhwinder Sharma');
+  const [callbackTime, setCallbackTime] = useState<string>('Within 15 mins');
+  const [callbackIssue, setCallbackIssue] = useState<string>('Need assistance with slot arrival timing');
+  const [callbackSubmitted, setCallbackSubmitted] = useState<CallbackRequest | null>(null);
 
   const predefinedQueries = [
     {
@@ -92,7 +102,6 @@ export const ProcurementHelp: React.FC = () => {
   };
 
   const handleVoiceQuery = () => {
-    // Check if webkitSpeechRecognition or SpeechRecognition exists
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
@@ -110,7 +119,6 @@ export const ProcurementHelp: React.FC = () => {
       };
       recognition.onerror = () => {
         setIsRecording(false);
-        // Fallback simulation for demonstration
         simulateSpokenQuery();
       };
       recognition.onend = () => setIsRecording(false);
@@ -128,6 +136,18 @@ export const ProcurementHelp: React.FC = () => {
       setIsRecording(false);
       handleAsk(spoken);
     }, 1500);
+  };
+
+  const handleRequestCallbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newReq = telecomManager.requestCallback({
+      farmerName: callbackName,
+      phone: callbackPhone,
+      language: language as any,
+      preferredTime: callbackTime,
+      issueCategory: callbackIssue
+    });
+    setCallbackSubmitted(newReq);
   };
 
   return (
@@ -261,7 +281,87 @@ export const ProcurementHelp: React.FC = () => {
         )}
       </div>
 
-      {/* 4. Direct Call Helpline Card */}
+      {/* 4. Request a Callback from Centre Desk (Section 17 & 48) */}
+      <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50/80 p-4 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Headphones className="h-5 w-5 text-emerald-800" />
+            <h3 className="text-sm font-black text-slate-900">Request a Callback (அழைப்பை கோருக)</h3>
+          </div>
+          <span className="text-[10px] bg-emerald-700 text-white font-bold px-2 py-0.5 rounded">
+            Operator Assistance
+          </span>
+        </div>
+
+        {callbackSubmitted ? (
+          <div className="bg-white rounded-xl p-3 border border-emerald-300 space-y-1.5 text-xs text-emerald-950">
+            <div className="flex items-center gap-1.5 font-black text-emerald-800">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <span>Callback Ticket #{callbackSubmitted.id} Confirmed!</span>
+            </div>
+            <p className="text-slate-600">
+              Mandi Kalan operator has received your request and will call <strong>+91 {callbackSubmitted.phone}</strong> {callbackSubmitted.preferredTime.toLowerCase()}.
+            </p>
+            <button
+              onClick={() => setCallbackSubmitted(null)}
+              className="text-[11px] font-bold text-gov-800 underline mt-1 block"
+            >
+              Request another callback
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleRequestCallbackSubmit} className="space-y-2.5 text-xs">
+            <p className="text-slate-600">
+              Cannot find what you need or prefer talking? Mandi operators will return your call free of charge.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label className="font-bold text-slate-700 block mb-0.5">Phone Number</label>
+                <input
+                  type="text"
+                  value={callbackPhone}
+                  onChange={e => setCallbackPhone(e.target.value)}
+                  className="w-full bg-white rounded-lg border border-slate-300 px-2.5 py-1.5 font-mono text-xs focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-0.5">Preferred Time</label>
+                <select
+                  value={callbackTime}
+                  onChange={e => setCallbackTime(e.target.value)}
+                  className="w-full bg-white rounded-lg border border-slate-300 px-2 py-1.5 text-xs focus:outline-none"
+                >
+                  <option value="Within 15 mins">Within 15 mins (Urgent)</option>
+                  <option value="After 2:00 PM">After 2:00 PM (Post Rush)</option>
+                  <option value="Evening (5–7 PM)">Evening (05:00 PM – 07:00 PM)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="font-bold text-slate-700 block mb-0.5">Reason for Call</label>
+              <input
+                type="text"
+                value={callbackIssue}
+                onChange={e => setCallbackIssue(e.target.value)}
+                placeholder="e.g. Question about moisture checking or slot change"
+                className="w-full bg-white rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2.5 rounded-xl bg-gov-800 hover:bg-gov-900 text-white font-black text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5"
+            >
+              <PhoneCall className="h-3.5 w-3.5" />
+              <span>Submit Callback Request</span>
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* 5. Direct Call Helpline Card */}
       <a
         href="tel:18001801551"
         className="rounded-2xl border-2 border-slate-300 bg-slate-100 p-4 flex items-center justify-between text-slate-900 hover:bg-slate-200 transition-colors"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSimulation, DEMO_STEPS } from '../../context/SimulationContext';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -10,8 +10,10 @@ import {
   Smartphone,
   CheckCircle2,
   Sparkles,
-  Info
+  Info,
+  Layers
 } from 'lucide-react';
+import { ArchitectureDemoModal } from './ArchitectureDemoModal';
 
 interface DemoToolbarProps {
   isPhoneFrameMode?: boolean;
@@ -35,6 +37,7 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
   } = useSimulation();
 
   const { role, setRole } = useAuth();
+  const [isArchModalOpen, setIsArchModalOpen] = useState<boolean>(false);
   const currentStepData = DEMO_STEPS[currentStep - 1] || DEMO_STEPS[0];
 
   return (
@@ -130,6 +133,16 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
               )}
             </button>
 
+            {/* Architecture & Demo Flow Modal Trigger */}
+            <button
+              onClick={() => setIsArchModalOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded font-bold border border-emerald-500/80 bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 text-xs transition-colors shadow-xs"
+              title="Inspect Complete Modular Architecture & 8 Demo Scenes for Judges"
+            >
+              <Layers className="h-3.5 w-3.5 text-emerald-300" />
+              <span>🏛️ Architecture & Demo</span>
+            </button>
+
             {/* Mobile Phone Simulator Toggle */}
             {onTogglePhoneFrame && (
               <button
@@ -180,6 +193,12 @@ export const DemoToolbar: React.FC<DemoToolbarProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Architecture & Demo Flow Modal Dialog */}
+      <ArchitectureDemoModal
+        isOpen={isArchModalOpen}
+        onClose={() => setIsArchModalOpen(false)}
+      />
     </div>
   );
 };
